@@ -79,7 +79,7 @@ export default function About() {
           <div className="mt-8 p-6 rounded-2xl border border-dashed border-border-green text-center">
             <p className="text-text3 text-sm">
               <span className="text-text2">Institución:</span>{' '}
-              <span className="font-mono text-lime">[Nombre de la Escuela / Institución]</span>
+              <span className="font-mono text-lime">Preaparatoria 2 de Octubre de 1968</span>
             </p>
             <p className="text-text3 text-xs mt-1">Nivel Preparatoria · Área de Física · Concurso de Investigación Científica · 2025</p>
           </div>

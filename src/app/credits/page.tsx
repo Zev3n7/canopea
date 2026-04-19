@@ -211,7 +211,7 @@ export default function CreditsPage() {
                 Agrega más entradas editando <code className="font-mono text-lime text-xs">src/lib/constants.ts</code> en la sección <code className="font-mono text-lime text-xs">COMPONENTES</code>.
               </p>
               <a
-                href="https://github.com"
+                href="https://github.com/Zev3n7/canopea"
                 className="inline-flex items-center gap-1.5 text-sm text-text3 hover:text-lime transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />

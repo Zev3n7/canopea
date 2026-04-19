@@ -64,7 +64,7 @@ export default function Hero() {
             Ver monitoreo en vivo
           </Link>
           <a
-            href="https://github.com"
+            href="https://github.com/Zev3n7/canopea"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border-green text-text2 hover:text-lime hover:border-lime/40 transition-all duration-200"

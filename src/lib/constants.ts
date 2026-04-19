@@ -5,20 +5,17 @@ export const UMBRALES: Umbrales = { mq2: 1000, mq7: 200, mq135: 150 }
 
 export const AUTORES: Author[] = [
   {
-    nombre:   '[Nombre Autor 1]',
-    rol:      'Investigador Principal',
-    escuela:  '[Nombre de la Escuela]',
-    bio:      'Descripción del autor 1. Intereses de investigación, logros académicos y participación en el proyecto Canopea.',
-    github:   '#',
-    linkedin: '#',
+    nombre:   'Logan Leonel Benitez Rojas',
+    rol:      'Programador principal y analistata de datos.',
+    escuela:  'Preparatoria 2 de Octubre de 1968',
+    bio:      'Interes por la fisica, ecologia y ciencia orientada a la resolución de problemas a traves del codigo.',
+    github:   'https://github.com/Zev3n7',
   },
   {
-    nombre:   '[Nombre Autor 2]',
-    rol:      'Co-investigador',
-    escuela:  '[Nombre de la Escuela]',
-    bio:      'Descripción del autor 2. Intereses de investigación, logros académicos y participación en el proyecto Canopea.',
-    github:   '#',
-    linkedin: '#',
+    nombre:   'David Lezama Gonzales',
+    rol:      'Programador y encargado de electronica.',
+    escuela:  'Preparatoria 2 de Octubre de 1968',
+    bio:      'Apasionado de la electronica y el diseño de circuitos orientados a la mecatrónica.',
   },
 ]
 

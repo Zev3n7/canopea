@@ -1,15 +1,14 @@
 // src/components/sections/SensoresSection.tsx
 'use client'
-import { useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { Wind, Flame, Beaker, MapPin, Edit3, Check, X } from 'lucide-react'
+import { Wind, Flame, Beaker, MapPin } from 'lucide-react'
 import { BALIZA_DEMO } from '@/lib/constants'
 
 // SSR-safe Leaflet
 const MapaBaliza = dynamic(() => import('@/components/ui/MapaBaliza'), {
   ssr: false,
   loading: () => (
-    <div className="h-80 rounded-xl bg-surface border border-border-green flex items-center justify-center">
+    <div className="h-[400px] rounded-xl bg-surface border border-border-green flex items-center justify-center">
       <div className="text-text3 text-sm font-mono animate-pulse">Cargando mapa…</div>
     </div>
   ),
@@ -55,27 +54,6 @@ const colorMap = {
 }
 
 export default function SensoresSection() {
-  const [lat, setLat]           = useState(BALIZA_DEMO.lat)
-  const [lng, setLng]           = useState(BALIZA_DEMO.lng)
-  const [editando, setEditando] = useState(false)
-  const [tmpLat, setTmpLat]     = useState(String(BALIZA_DEMO.lat))
-  const [tmpLng, setTmpLng]     = useState(String(BALIZA_DEMO.lng))
-
-  const onMapMove = useCallback((newLat: number, newLng: number) => {
-    setLat(newLat)
-    setLng(newLng)
-    setTmpLat(newLat.toFixed(5))
-    setTmpLng(newLng.toFixed(5))
-  }, [])
-
-  const guardar = () => {
-    const la = parseFloat(tmpLat), ln = parseFloat(tmpLng)
-    if (!isNaN(la) && !isNaN(ln) && la >= -90 && la <= 90 && ln >= -180 && ln <= 180) {
-      setLat(la); setLng(ln)
-    }
-    setEditando(false)
-  }
-
   return (
     <section id="sensores" className="py-24 bg-bg-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -127,59 +105,32 @@ export default function SensoresSection() {
 
         {/* Mapa + ubicación */}
         <div className="bg-surface border border-border-green rounded-2xl overflow-hidden">
+          {/* Cabecera del mapa */}
           <div className="p-6 border-b border-border-green flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <MapPin className="w-5 h-5 text-lime" />
               <div>
                 <h3 className="font-semibold">{BALIZA_DEMO.nombre}</h3>
                 <p className="text-text3 text-xs font-mono mt-0.5">
-                  {lat.toFixed(5)}, {lng.toFixed(5)}
+                  {BALIZA_DEMO.lat.toFixed(5)}, {BALIZA_DEMO.lng.toFixed(5)}
                 </p>
               </div>
             </div>
-
-            {/* Editar coords */}
-            {editando ? (
-              <div className="flex items-center gap-2 flex-wrap">
-                <input
-                  type="number" step="0.00001"
-                  value={tmpLat} onChange={e => setTmpLat(e.target.value)}
-                  placeholder="Latitud"
-                  className="w-32 px-3 py-1.5 bg-bg-dark border border-lime/30 rounded-lg text-sm font-mono text-text outline-none focus:border-lime"
-                />
-                <input
-                  type="number" step="0.00001"
-                  value={tmpLng} onChange={e => setTmpLng(e.target.value)}
-                  placeholder="Longitud"
-                  className="w-36 px-3 py-1.5 bg-bg-dark border border-lime/30 rounded-lg text-sm font-mono text-text outline-none focus:border-lime"
-                />
-                <button onClick={guardar}
-                  className="p-1.5 rounded-lg bg-lime/20 text-lime hover:bg-lime/30 transition-colors">
-                  <Check className="w-4 h-4" />
-                </button>
-                <button onClick={() => setEditando(false)}
-                  className="p-1.5 rounded-lg bg-surface border border-border-green text-text3 hover:text-text transition-colors">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => { setEditando(true); setTmpLat(String(lat)); setTmpLng(String(lng)) }}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-green text-text2 hover:text-lime hover:border-lime/30 text-sm transition-colors"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                Editar ubicación
-              </button>
-            )}
           </div>
 
-          <div className="h-80">
-            <MapaBaliza lat={lat} lng={lng} onMove={onMapMove} />
+          {/* Renderizado del Mapa */}
+          <div className="h-[400px] w-full">
+            <MapaBaliza 
+              lat={BALIZA_DEMO.lat} 
+              lng={BALIZA_DEMO.lng} 
+              // Ya no pasamos onMove porque el mapa es estático
+            />
           </div>
 
+          {/* Pie del mapa */}
           <div className="px-6 py-3 border-t border-border-green text-xs text-text3 font-mono flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-lime dot-pulse" />
-            Arrastra el marcador para actualizar la ubicación de la baliza
+            Ubicación estática de la baliza
           </div>
         </div>
       </div>
