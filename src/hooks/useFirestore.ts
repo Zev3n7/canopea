@@ -28,7 +28,7 @@ export function useMonitoreo(balizaId: string) {
               limit(50)
             )
             unsubRef.current = onSnapshot(q, (snap) => {
-              const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as SensorReading))
+              const data = snap.docs.map(d => ({ id: d.id, ...d.data({ serverTimestamps: 'estimate' }) } as SensorReading))
               setLecturas(data)
               setConectado(true)
               setModoDemo(false)

@@ -12,8 +12,15 @@ interface SensorChartProps {
 }
 
 function tsToDate(ts: SensorReading['timestamp']): Date {
+  if (!ts) return new Date()
   if (ts instanceof Date) return ts
-  return new Date((ts as any).seconds * 1000)
+  if (typeof ts === 'object' && 'seconds' in ts) {
+    return new Date((ts as any).seconds * 1000)
+  }
+  if (typeof ts === 'number') {
+    return new Date(ts)
+  }
+  return new Date() // fallback final
 }
 
 export default function SensorChart({ lecturas, sensor, color, label, umbral }: SensorChartProps) {
