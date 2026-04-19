@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   },
 }
 
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className="scroll-smooth">
@@ -22,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
       <body className="antialiased">
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   )

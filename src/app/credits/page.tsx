@@ -3,40 +3,39 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Github, Linkedin, ExternalLink, ChevronDown, ChevronUp, Cpu, Radio, Server, Wifi, Zap, FlaskConical } from 'lucide-react'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
+import PageHeroBanner from '@/components/layout/PageHeroBanner'
 import { AUTORES, COMPONENTES } from '@/lib/constants'
 import type { ComponenteProyecto } from '@/types'
 
 const categoryIcons: Record<ComponenteProyecto['categoria'], React.ElementType> = {
-  hardware:      Cpu,
-  sensor:        FlaskConical,
-  software:      Server,
-  comunicacion:  Wifi,
+  hardware: Cpu,
+  sensor: FlaskConical,
+  software: Server,
+  comunicacion: Wifi,
 }
 
 const categoryColors: Record<ComponenteProyecto['categoria'], { text: string; border: string; bg: string }> = {
-  hardware:     { text: 'text-lime',       border: 'border-lime/20',   bg: 'bg-lime/5'   },
-  sensor:       { text: 'text-cyan',       border: 'border-cyan/20',   bg: 'bg-cyan/5'   },
-  software:     { text: 'text-olive-light',border: 'border-olive/30',  bg: 'bg-olive/5'  },
-  comunicacion: { text: 'text-teal-light', border: 'border-teal/30',   bg: 'bg-teal/5'   },
+  hardware: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
+  sensor: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
+  software: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
+  comunicacion: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
 }
 
 function ComponenteCard({ comp }: { comp: ComponenteProyecto }) {
   const [expanded, setExpanded] = useState(false)
-  const Icon  = categoryIcons[comp.categoria]
+  const Icon = categoryIcons[comp.categoria]
   const color = categoryColors[comp.categoria]
 
   return (
-    <article className={`bg-surface border ${color.border} rounded-2xl overflow-hidden hover:border-opacity-60 transition-all duration-300`}>
+    <article className={`bg-[#032221] border ${color.border} rounded-2xl overflow-hidden hover:border-[#00DF81]/40 transition-all duration-300`}>
       {/* Image placeholder */}
-      <div className={`h-40 ${color.bg} border-b border-border-green flex items-center justify-center relative`}>
+      <div className={`h-40 ${color.bg} border-b border-[#095544] flex items-center justify-center relative`}>
         {comp.imagen ? (
           <Image src={comp.imagen} alt={comp.titulo} fill className="object-cover" loading="lazy" />
         ) : (
-          <div className="flex flex-col items-center gap-2 opacity-30">
+          <div className="flex flex-col items-center gap-2 opacity-60">
             <Icon className={`w-12 h-12 ${color.text}`} />
-            <span className="text-xs font-mono text-text3">Sin imagen</span>
+            <span className="text-xs font-mono text-[#AAC8C4]">Sin imagen</span>
           </div>
         )}
         {/* Category badge */}
@@ -51,15 +50,15 @@ function ComponenteCard({ comp }: { comp: ComponenteProyecto }) {
             <Icon className={`w-4 h-4 ${color.text}`} />
           </div>
           <div>
-            <h3 className="font-display font-semibold text-base">{comp.titulo}</h3>
-            <p className="text-text3 text-xs mt-0.5">{comp.descripcion}</p>
+            <h3 className="font-display font-semibold text-base text-[#F1F7F6]">{comp.titulo}</h3>
+            <p className="text-[#AAC8C4] text-xs mt-0.5">{comp.descripcion}</p>
           </div>
         </div>
 
         {/* Expandable details */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full mt-3 pt-3 border-t border-border-green flex items-center justify-between text-xs text-text3 hover:text-text2 transition-colors"
+          className="w-full mt-3 pt-3 border-t border-[#095544] flex items-center justify-between text-xs text-[#AAC8C4] hover:text-[#00DF81] transition-colors"
         >
           <span>{expanded ? 'Ocultar detalles' : 'Ver detalles técnicos'}</span>
           {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -68,7 +67,7 @@ function ComponenteCard({ comp }: { comp: ComponenteProyecto }) {
         {expanded && (
           <ul className="mt-3 space-y-1.5">
             {comp.detalles.map((d, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-text2">
+              <li key={i} className="flex items-start gap-2 text-xs text-[#F1F7F6]">
                 <span className={`w-1 h-1 rounded-full ${color.text} mt-1.5 flex-shrink-0`} />
                 {d}
               </li>
@@ -84,11 +83,11 @@ export default function CreditsPage() {
   const [activeCategory, setActiveCategory] = useState<ComponenteProyecto['categoria'] | 'todos'>('todos')
 
   const categorias: Array<{ id: ComponenteProyecto['categoria'] | 'todos'; label: string }> = [
-    { id: 'todos',       label: 'Todos' },
-    { id: 'hardware',    label: 'Hardware' },
-    { id: 'sensor',      label: 'Sensores' },
-    { id: 'software',    label: 'Software' },
-    { id: 'comunicacion',label: 'Comunicación' },
+    { id: 'todos', label: 'Todos' },
+    { id: 'hardware', label: 'Hardware' },
+    { id: 'sensor', label: 'Sensores' },
+    { id: 'software', label: 'Software' },
+    { id: 'comunicacion', label: 'Comunicación' },
   ]
 
   const filtered = activeCategory === 'todos'
@@ -96,132 +95,118 @@ export default function CreditsPage() {
     : COMPONENTES.filter(c => c.categoria === activeCategory)
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-bg-dark pt-16">
+    <main className="min-h-screen bg-[#030D09]">
 
-        {/* ── Authors ── */}
-        <section className="py-24 bg-bg-mid border-b border-border-green">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <span className="text-xs font-mono tracking-widest text-lime uppercase">Equipo</span>
-              <h1 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4">
-                Autores del <span className="gradient-text">proyecto</span>
-              </h1>
-              <div className="section-sep mx-auto" />
-            </div>
+      {/* ── FaultyTerminal Hero Banner ── */}
+      <PageHeroBanner
+        tag="CANOPEA :: EQUIPO · COMPONENTES · TECNOLOGÍA"
+        title="Créditos del proyecto"
+        subtitle="Equipo de investigación, componentes técnicos y tecnologías utilizadas en el sistema de balizas meteorológicas Canopea."
+      />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-              {AUTORES.map((autor, i) => (
-                <article key={i} className="bg-surface border border-border-green rounded-2xl overflow-hidden hover:border-lime/20 transition-colors">
-                  {/* Photo area */}
-                  <div className="relative h-56 bg-gradient-to-br from-bg-dark via-surface to-teal-dark flex items-center justify-center border-b border-border-green">
-                    {autor.foto ? (
-                      <Image
-                        src={autor.foto}
-                        alt={autor.nombre}
-                        fill
-                        className="object-cover object-center"
-                        loading="lazy"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-olive to-teal border-2 border-lime/30 flex items-center justify-center text-4xl font-bold text-lime">
-                          {autor.nombre.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </div>
-                        <span className="text-xs text-text3 font-mono">Foto no disponible</span>
+      {/* ── Authors ── */}
+      <section className="py-24 bg-bg-mid border-b border-border-green">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="text-xs font-mono tracking-widest text-[#00DF81] uppercase">Equipo</span>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4" style={{ color: '#F1F7F6' }}>
+              Autores del <span style={{ color: '#00DF81' }}>proyecto</span>
+            </h1>
+            <div className="section-sep mx-auto" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            {AUTORES.map((autor, i) => (
+              <article key={i} className="bg-surface border border-border-green rounded-2xl overflow-hidden hover:border-lime/20 transition-colors">
+                {/* Photo area */}
+                <div className="relative h-56 bg-gradient-to-br from-[#030D09] to-[#0B453A] flex items-center justify-center border-b border-[#095544]">
+                  {autor.foto ? (
+                    <Image
+                      src={autor.foto}
+                      alt={autor.nombre}
+                      fill
+                      className="object-cover object-center"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-24 h-24 rounded-full bg-[#032221] border-2 border-[#095544] flex items-center justify-center text-4xl font-bold text-[#00DF81]">
+                        {autor.nombre.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
+                      <span className="text-xs text-[#707D7D] font-mono">Foto no disponible</span>
+                    </div>
+                  )}
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <div className="bg-[#030D09]/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-[#095544]/50">
+                      <p className="text-[#00DF81] text-xs font-mono">{autor.rol}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <h2 className="text-xl font-display font-bold mb-1">{autor.nombre}</h2>
+                  <p className="text-text3 text-sm mb-4">{autor.escuela}</p>
+                  <p className="text-text2 text-sm leading-relaxed mb-5">{autor.bio}</p>
+                  <div className="flex items-center gap-3">
+                    {autor.github && (
+                      <a href={autor.github} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-xs text-[#AAC8C4] hover:text-[#00DF81] transition-colors">
+                        <Github className="w-4 h-4" /><span>GitHub</span>
+                      </a>
                     )}
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <div className="bg-bg-dark/80 backdrop-blur-sm rounded-lg px-3 py-2">
-                        <p className="text-lime text-xs font-mono">{autor.rol}</p>
-                      </div>
-                    </div>
+                    {autor.linkedin && (
+                      <a href={autor.linkedin} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-xs text-[#AAC8C4] hover:text-[#00DF81] transition-colors">
+                        <Linkedin className="w-4 h-4" /><span>LinkedIn</span>
+                      </a>
+                    )}
                   </div>
-
-                  <div className="p-6">
-                    <h2 className="text-xl font-display font-bold mb-1">{autor.nombre}</h2>
-                    <p className="text-text3 text-sm mb-4">{autor.escuela}</p>
-                    <p className="text-text2 text-sm leading-relaxed mb-5">{autor.bio}</p>
-                    <div className="flex items-center gap-3">
-                      {autor.github && (
-                        <a href={autor.github} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-xs text-text3 hover:text-lime transition-colors">
-                          <Github className="w-4 h-4" /><span>GitHub</span>
-                        </a>
-                      )}
-                      {autor.linkedin && (
-                        <a href={autor.linkedin} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-xs text-text3 hover:text-cyan transition-colors">
-                          <Linkedin className="w-4 h-4" /><span>LinkedIn</span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+                </div>
+              </article>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── Component blog ── */}
-        <section className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <span className="text-xs font-mono tracking-widest text-lime uppercase">Documentación</span>
-              <h2 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4">
-                Componentes del <span className="gradient-text">sistema</span>
-              </h2>
-              <div className="section-sep mx-auto mb-4" />
-              <p className="text-text2 text-sm max-w-lg mx-auto">
-                Descripción técnica de cada elemento que conforma la red de balizas Canopea.
-              </p>
-            </div>
+      {/* ── Component blog ── */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-xs font-mono tracking-widest text-lime uppercase">Documentación</span>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4">
+              Componentes del <span className="gradient-text">sistema</span>
+            </h2>
+            <div className="section-sep mx-auto mb-4" />
+            <p className="text-text2 text-sm max-w-lg mx-auto">
+              Descripción técnica de cada elemento que conforma la red de balizas Canopea.
+            </p>
+          </div>
 
-            {/* Filter tabs */}
-            <div className="flex flex-wrap justify-center gap-2 mb-10">
-              {categorias.map(({ id, label }) => (
-                <button
-                  key={id}
-                  onClick={() => setActiveCategory(id)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                    activeCategory === id
-                      ? 'bg-lime text-bg-dark'
-                      : 'bg-surface border border-border-green text-text2 hover:text-lime hover:border-lime/30'
+          {/* Filter tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-10">
+            {categorias.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => setActiveCategory(id)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeCategory === id
+                  ? 'bg-[#00DF81] text-[#030D09]'
+                  : 'bg-[#032221] border border-[#095544] text-[#AAC8C4] hover:text-[#00DF81] hover:border-[#00DF81]/30'
                   }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {/* Components grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map(comp => (
-                <ComponenteCard key={comp.id} comp={comp} />
-              ))}
-            </div>
-
-            {/* Add component placeholder */}
-            <div className="mt-8 rounded-2xl border border-dashed border-border-green p-8 text-center">
-              <Zap className="w-8 h-8 text-text3 mx-auto mb-3" />
-              <h3 className="font-semibold text-text2 mb-1">¿Faltan componentes?</h3>
-              <p className="text-text3 text-sm mb-4">
-                Agrega más entradas editando <code className="font-mono text-lime text-xs">src/lib/constants.ts</code> en la sección <code className="font-mono text-lime text-xs">COMPONENTES</code>.
-              </p>
-              <a
-                href="https://github.com/Zev3n7/canopea"
-                className="inline-flex items-center gap-1.5 text-sm text-text3 hover:text-lime transition-colors"
               >
-                <ExternalLink className="w-4 h-4" />
-                Contribuir al repositorio
-              </a>
-            </div>
+                {label}
+              </button>
+            ))}
           </div>
-        </section>
-      </main>
-      <Footer />
-    </>
+
+          {/* Components grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map(comp => (
+              <ComponenteCard key={comp.id} comp={comp} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   )
 }

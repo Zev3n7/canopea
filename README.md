@@ -1,12 +1,15 @@
-# 🌿 Canopea — Balizas Meteorológicas de Código Libre
+# Canopea — Balizas Meteorológicas de Código Libre
 
-Sistema de monitoreo de calidad del aire basado en balizas autónomas con sensores MQ y ESP32. Proyecto de investigación científica, nivel preparatoria.
+Sistema de monitoreo de calidad del aire basado en balizas autónomas con sensores MQ y ESP32. Proyecto de investigación científica orientado a fisica para el XXXV Concurso Estatal De Aparatos y Experimentos de Física.
 
 ---
 
-## 🚀 Inicio rápido
+## Inicio rápido
 
 ```bash
+# Para poder modificar el codigo de forma correcta
+Utiliza algun visualizador de codigo como VisualStudioCode o Antigravity junto con un administrador de archivos
+
 # 1. Instalar dependencias
 npm install
 
@@ -21,7 +24,7 @@ npm run dev
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 src/
@@ -46,7 +49,7 @@ src/
 
 ## 🔥 Conectar Firebase
 
-1. Crea un proyecto en [console.firebase.google.com](https://console.firebase.google.com)
+1. Crea un proyecto en [console.firebase.google.com](https://console.firebase.google.com) poniendo como servidor más cercano el de Mexico para tener más conexión
 2. Activa **Firestore** en modo nativo
 3. Crea la colección `balizas` con un documento `baliza-001`:
    ```json

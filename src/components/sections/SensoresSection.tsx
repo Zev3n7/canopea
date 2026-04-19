@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { Wind, Flame, Beaker, MapPin } from 'lucide-react'
 import { BALIZA_DEMO } from '@/lib/constants'
+import { BentoCard, CANOPEA_GLOW, CANOPEA_GLOW_CYAN } from '@/components/BentoCard'
 
 // SSR-safe Leaflet
 const MapaBaliza = dynamic(() => import('@/components/ui/MapaBaliza'), {
@@ -24,6 +25,7 @@ const sensores = [
     color: 'lime' as const,
     desc:  'Sensor de semiconductor de óxido metálico (MOS). Detecta gases inflamables y humo mediante la variación de resistencia eléctrica al contacto con el gas.',
     umbral: 1000,
+    tag: 'INFLAMABLE',
   },
   {
     id:    'mq7',
@@ -34,6 +36,7 @@ const sensores = [
     color: 'cyan' as const,
     desc:  'Especializado en la detección de CO, un gas tóxico producto de combustión incompleta. Indicador directo de tráfico vehicular e industria.',
     umbral: 200,
+    tag: 'TÓXICO-CO',
   },
   {
     id:    'mq135',
@@ -44,13 +47,14 @@ const sensores = [
     color: 'olive' as const,
     desc:  'Sensor de amplio espectro que detecta compuestos orgánicos volátiles y gases de contaminación urbana, agrícola e industrial.',
     umbral: 150,
+    tag: 'VOC/NOx',
   },
 ]
 
 const colorMap = {
-  lime:  { text: 'text-lime',  border: 'border-lime/20',  bg: 'bg-lime/5',  badge: 'bg-lime/10 text-lime'  },
-  cyan:  { text: 'text-cyan',  border: 'border-cyan/20',  bg: 'bg-cyan/5',  badge: 'bg-cyan/10 text-cyan'  },
-  olive: { text: 'text-olive-light', border: 'border-olive/30', bg: 'bg-olive/5', badge: 'bg-olive/10 text-olive-light' },
+  lime:  { text: 'text-lime',   border: 'border-lime/25',  bg: 'bg-lime/5',   badge: 'bg-lime/10 text-lime',   glow: CANOPEA_GLOW },
+  cyan:  { text: 'text-cyan',   border: 'border-cyan/25',  bg: 'bg-cyan/5',   badge: 'bg-cyan/10 text-cyan',   glow: CANOPEA_GLOW_CYAN },
+  olive: { text: 'text-frog',   border: 'border-frog/25',  bg: 'bg-frog/5',   badge: 'bg-frog/10 text-frog',   glow: '23, 135, 109' },
 }
 
 export default function SensoresSection() {
@@ -70,42 +74,66 @@ export default function SensoresSection() {
           </p>
         </div>
 
-        {/* Sensor cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {sensores.map(({ id, icon: Icon, nombre, gases, rango, color, desc, umbral }) => {
+        {/* Bento sensor grid — asymmetric layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+          {sensores.map(({ id, icon: Icon, nombre, gases, rango, color, desc, umbral, tag }) => {
             const c = colorMap[color]
             return (
-              <div
+              <BentoCard
                 key={id}
-                className={`bg-surface border ${c.border} rounded-2xl p-6 hover:-translate-y-1 transition-all duration-300`}
+                className={`bg-surface border ${c.border} rounded-2xl p-6 flex flex-col justify-between min-h-[280px] hover:-translate-y-1 transition-transform duration-300`}
+                glowColor={c.glow}
+                enableTilt
+                clickEffect
+                particleCount={10}
               >
-                <div className={`w-12 h-12 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center mb-5`}>
-                  <Icon className={`w-6 h-6 ${c.text}`} />
+                {/* Top: icon + tag */}
+                <div className="flex items-start justify-between mb-5">
+                  <div className={`w-12 h-12 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center`}>
+                    <Icon className={`w-6 h-6 ${c.text}`} />
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${c.badge} font-mono tracking-wider`}>MOS</span>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full border ${c.border} ${c.text} font-mono opacity-70`}>{tag}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className={`text-2xl font-bold font-mono ${c.text}`}>{nombre}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${c.badge} font-mono`}>
-                    MOS
-                  </span>
+
+                {/* Name + gases */}
+                <div className="mb-3">
+                  <h3 className={`text-2xl font-bold font-mono ${c.text} mb-1`}>{nombre}</h3>
+                  <p className="text-text2 text-sm font-medium">{gases}</p>
                 </div>
-                <p className="text-text2 text-sm mb-3 font-medium">{gases}</p>
-                <p className="text-text3 text-sm leading-relaxed mb-4">{desc}</p>
-                <div className="pt-4 border-t border-border-green flex items-center justify-between">
-                  <span className="text-xs text-text3">Rango</span>
-                  <span className={`text-xs font-mono ${c.text}`}>{rango}</span>
+
+                <p className="text-text3 text-xs leading-relaxed mb-4 flex-1">{desc}</p>
+
+                {/* Footer stats */}
+                <div className={`pt-4 border-t ${c.border} space-y-1`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-text3">Rango</span>
+                    <span className={`text-xs font-mono ${c.text}`}>{rango}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-text3">Umbral alerta</span>
+                    <span className="text-xs font-mono text-orange-400">&gt; {umbral} ppm</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-text3">Umbral alerta</span>
-                  <span className="text-xs font-mono text-orange-400">&gt; {umbral} ppm</span>
-                </div>
-              </div>
+
+                {/* Corner label */}
+                <span className="absolute top-3 left-3 font-mono text-[9px] text-text3/50 tracking-widest opacity-60">SRC::SENSOR</span>
+              </BentoCard>
             )
           })}
         </div>
 
-        {/* Mapa + ubicación */}
-        <div className="bg-surface border border-border-green rounded-2xl overflow-hidden">
-          {/* Cabecera del mapa */}
+        {/* Map card — also wrapped in BentoCard */}
+        <BentoCard
+          className="bg-surface border border-border-green rounded-2xl overflow-hidden"
+          glowColor={CANOPEA_GLOW}
+          enableTilt={false}
+          clickEffect
+          particleCount={8}
+        >
+          {/* Map header */}
           <div className="p-6 border-b border-border-green flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <MapPin className="w-5 h-5 text-lime" />
@@ -116,19 +144,23 @@ export default function SensoresSection() {
                 </p>
               </div>
             </div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-text3 tracking-widest">SRC::MAPA-BALIZA</span>
+            </div>
           </div>
 
-          {/* Renderizado del Mapa */}
+          {/* Map render */}
           <div className="h-[400px] w-full">
             <MapaBaliza />
           </div>
 
-          {/* Pie del mapa */}
+          {/* Map footer */}
           <div className="px-6 py-3 border-t border-border-green text-xs text-text3 font-mono flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-lime dot-pulse" />
             Ubicación estática de la baliza
           </div>
-        </div>
+        </BentoCard>
+
       </div>
     </section>
   )

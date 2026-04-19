@@ -9,41 +9,63 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta Canopea (Adobe Color: Tidy Green Clean)
-        charcoal:  '#565859',
-        olive:     '#4F7001',
-        lime:      '#84BD01',
-        cyan:      '#0DD2EA',
-        teal:      '#265157',
-        // Extendidas para UI
-        'olive-light':  '#7FA832',
-        'teal-light':   '#3A7580',
-        'teal-dark':    '#162E32',
-        'lime-light':   '#B5D94C',
-        'cyan-dark':    '#0A9BAF',
-        'bg-dark':      '#0D1710',
-        'bg-mid':       '#111E14',
-        'bg-surface':   '#172319',
-        'border-green': '#1E3520',
+        // ── Canopea 2.0 — Paleta tecnológica formal ──────────────────────
+        // Primary (de oscuro a claro)
+        'rich-black':   '#030D09',   // fondo principal
+        'dark-green':   '#032221',   // bg-mid / superficie baja
+        'bangladesh':   '#03624C',   // superficie media
+        'meadow':       '#2CC295',   // acento secundario / hover
+        'caribbean':    '#00DF81',   // acento principal (verde brillante)
+        'anti-white':   '#F1F7F6',   // texto primario
+
+        // Secondary
+        pine:           '#06302B',   // bg-dark alternativo
+        basil:          '#0B453A',   // superficie / borde
+        forest:         '#095544',   // borde / divisor
+        frog:           '#17876D',   // acento terciario
+        mint:           '#2FA98C',   // acento hover suave
+        stone:          '#707D7D',   // texto terciario / deshabilitado
+        pistachio:      '#AAC8C4',   // texto secundario
+
+        // Alias semánticos (compatibilidad con código existente)
+        lime:           '#00DF81',   // → caribbean
+        cyan:           '#2CC295',   // → meadow
+        teal:           '#17876D',   // → frog
+        olive:          '#095544',   // → forest
+        charcoal:       '#707D7D',   // → stone
+
+        'lime-light':   '#2CC295',
+        'cyan-dark':    '#17876D',
+        'olive-light':  '#2FA98C',
+        'teal-light':   '#2FA98C',
+        'teal-dark':    '#032221',
+
+        // Backgrounds
+        'bg-dark':      '#030D09',
+        'bg-mid':       '#032221',
+        surface:        '#0B453A',   // cards / panels
+
+        // Borders
+        'border-green': '#095544',   // divisores
+
+        // Text
+        text:           '#F1F7F6',
+        text2:          '#AAC8C4',
+        text3:          '#707D7D',
       },
       fontFamily: {
-        sans:  ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
-        mono:  ['var(--font-geist-mono)', 'monospace'],
+        sans:    ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        mono:    ['"JetBrains Mono"', 'monospace'],
         display: ['"Space Grotesk"', 'sans-serif'],
       },
       animation: {
         'fade-in':    'fadeIn 0.6s ease forwards',
         'slide-up':   'slideUp 0.7s ease forwards',
         'pulse-slow': 'pulse 3s ease-in-out infinite',
-        'glow':       'glow 2s ease-in-out infinite alternate',
       },
       keyframes: {
         fadeIn:  { from: { opacity: '0' }, to: { opacity: '1' } },
-        slideUp: { from: { opacity: '0', transform: 'translateY(30px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-        glow:    { from: { textShadow: '0 0 10px #84BD01' }, to: { textShadow: '0 0 30px #84BD01, 0 0 60px #0DD2EA' } },
-      },
-      backgroundImage: {
-        'grid-pattern': "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%231E3520' stroke-width='0.5'%3E%3Cpath d='M0 0h40v40H0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+        slideUp: { from: { opacity: '0', transform: 'translateY(24px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
       },
     },
   },

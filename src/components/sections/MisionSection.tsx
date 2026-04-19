@@ -1,17 +1,21 @@
 // src/components/sections/MisionSection.tsx
-import { Target, Eye, Heart, Zap } from 'lucide-react'
+'use client'
+import { Target, Eye, Heart, Zap, Code2 } from 'lucide-react'
+import { BentoCard, CANOPEA_GLOW, CANOPEA_GLOW_CYAN } from '@/components/BentoCard'
 
 const items = [
   {
     icon:   Target,
     titulo: 'Propósito',
     color:  'lime',
+    glow:   CANOPEA_GLOW,
     texto:  'Democratizar el acceso a información de calidad del aire mediante tecnología de código libre, permitiendo que cualquier comunidad, escuela o investigador pueda construir y operar su propia red de monitoreo ambiental sin depender de soluciones comerciales costosas.',
   },
   {
     icon:   Heart,
     titulo: 'Valores',
     color:  'cyan',
+    glow:   CANOPEA_GLOW_CYAN,
     lista: [
       'Código abierto y transparencia radical',
       'Accesibilidad y bajo costo de replicación',
@@ -24,21 +28,23 @@ const items = [
     icon:   Zap,
     titulo: 'Misión',
     color:  'olive',
+    glow:   '79, 112, 1',
     texto:  'Diseñar, construir y validar un sistema distribuido de balizas meteorológicas autónomas capaces de generar mapas georreferenciados de calidad del aire en tiempo real, publicando todo el código fuente, esquemas de hardware y documentación bajo licencia libre para su libre reproducción global.',
   },
   {
     icon:   Eye,
     titulo: 'Visión',
     color:  'teal',
+    glow:   '38, 81, 87',
     texto:  'Un futuro donde cualquier comunidad del mundo cuente con datos precisos y accesibles sobre la calidad de su aire, impulsando políticas públicas informadas, investigación científica descentralizada y ciudadanos empoderados para proteger su salud ambiental.',
   },
 ]
 
 const colorMap: Record<string, { text: string; border: string; bg: string; dot: string }> = {
-  lime:  { text: 'text-lime',       border: 'border-lime/20',   bg: 'bg-lime/5',   dot: 'bg-lime'       },
-  cyan:  { text: 'text-cyan',       border: 'border-cyan/20',   bg: 'bg-cyan/5',   dot: 'bg-cyan'       },
-  olive: { text: 'text-olive-light',border: 'border-olive/30',  bg: 'bg-olive/5',  dot: 'bg-olive-light'},
-  teal:  { text: 'text-teal-light', border: 'border-teal/30',   bg: 'bg-teal/5',   dot: 'bg-teal-light' },
+  lime:  { text: 'text-lime',       border: 'border-lime/20',  bg: 'bg-lime/5',  dot: 'bg-lime'       },
+  cyan:  { text: 'text-cyan',       border: 'border-cyan/20',  bg: 'bg-cyan/5',  dot: 'bg-cyan'       },
+  olive: { text: 'text-olive-light',border: 'border-olive/30', bg: 'bg-olive/5', dot: 'bg-olive-light' },
+  teal:  { text: 'text-teal-light', border: 'border-teal/30',  bg: 'bg-teal/5',  dot: 'bg-teal-light'  },
 }
 
 export default function MisionSection() {
@@ -59,17 +65,27 @@ export default function MisionSection() {
         </div>
 
         {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-          {items.map(({ icon: Icon, titulo, color, texto, lista }) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+          {items.map(({ icon: Icon, titulo, color, glow, texto, lista }) => {
             const c = colorMap[color]
             return (
-              <div
+              <BentoCard
                 key={titulo}
-                className={`bg-surface border ${c.border} rounded-2xl p-8 hover:border-opacity-50 transition-all duration-300 group`}
+                className={`bg-surface border ${c.border} rounded-2xl p-8 min-h-[260px] hover:-translate-y-1 transition-transform duration-300`}
+                glowColor={glow}
+                enableTilt
+                clickEffect
+                particleCount={10}
               >
-                <div className={`w-12 h-12 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <div className={`w-12 h-12 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center mb-6`}>
                   <Icon className={`w-6 h-6 ${c.text}`} />
                 </div>
+
+                {/* Retro code label */}
+                <span className={`font-mono text-[9px] ${c.text} tracking-[0.25em] opacity-60 uppercase mb-2 block`}>
+                  CANOPEA :: {titulo.toUpperCase()}
+                </span>
+
                 <h3 className={`text-xl font-display font-bold mb-4 ${c.text}`}>{titulo}</h3>
                 {texto && (
                   <p className="text-text2 text-sm leading-relaxed">{texto}</p>
@@ -84,32 +100,32 @@ export default function MisionSection() {
                     ))}
                   </ul>
                 )}
-              </div>
+              </BentoCard>
             )
           })}
         </div>
 
         {/* Open source banner */}
-        <div className="rounded-2xl border border-lime/20 bg-lime/5 p-8 text-center relative overflow-hidden">
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 50%, rgba(132,189,1,0.04) 0%, transparent 70%)' }}
-          />
-          <div className="relative z-10">
-            <div className="text-4xl mb-4">🌿</div>
-            <h3 className="text-xl font-display font-bold mb-2 text-lime">Filosofía Open Source</h3>
-            <p className="text-text2 text-sm max-w-2xl mx-auto leading-relaxed mb-6">
-              Todo el código del firmware ESP32, el servidor backend, el frontend y los esquemas de circuito están disponibles públicamente. Canopea utiliza exclusivamente herramientas de código libre y publica su trabajo bajo licencia MIT.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-mono">
-              {['MIT License', 'Firebase', 'ESP32 Arduino', 'Next.js', 'React', 'Leaflet.js'].map(tag => (
-                <span key={tag} className="px-3 py-1 rounded-full bg-surface border border-border-green text-text2">
-                  {tag}
-                </span>
-              ))}
+        <div className="rounded-xl border border-border-green bg-surface p-8 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-bg-dark border border-border-green flex items-center justify-center">
+              <Code2 className="w-6 h-6 text-lime" />
             </div>
           </div>
+          <span className="mono-tag block mb-2">CANOPEA :: OPEN-SOURCE</span>
+          <h3 className="text-xl font-display font-semibold mb-3 text-lime">Filosofía Open Source</h3>
+          <p className="text-text2 text-sm max-w-2xl mx-auto leading-relaxed mb-6">
+            Todo el código del firmware ESP32, el servidor backend, el frontend y los esquemas de circuito están disponibles públicamente. Canopea utiliza exclusivamente herramientas de código libre y publica su trabajo bajo licencia MIT.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-mono">
+            {['MIT License', 'Firebase', 'ESP32 Arduino', 'Next.js', 'React', 'Leaflet.js'].map(tag => (
+              <span key={tag} className="px-3 py-1 rounded border border-border-green bg-bg-dark text-text2 hover:border-lime/40 hover:text-lime transition-colors">
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
   )

@@ -5,25 +5,31 @@ export const UMBRALES: Umbrales = { mq2: 1000, mq7: 200, mq135: 150 }
 
 export const AUTORES: Author[] = [
   {
-    nombre:   'Logan Leonel Benitez Rojas',
-    rol:      'Programador principal y analistata de datos.',
-    escuela:  'Preparatoria 2 de Octubre de 1968',
-    bio:      'Interes por la fisica, ecologia y ciencia orientada a la resolución de problemas a traves del codigo.',
-    github:   'https://github.com/Zev3n7',
+    nombre: 'Logan Leonel Benitez Rojas',
+    rol: 'Estudiante | Programador principal, diseñador web y analista de datos.',
+    escuela: 'Preparatoria 2 de Octubre de 1968',
+    bio: 'Interes por la fisica, ecologia y ciencia orientada a la resolución de problemas a traves del codigo.',
+    github: 'https://github.com/Zev3n7',
   },
   {
-    nombre:   'David Lezama Gonzales',
-    rol:      'Programador y encargado de electronica.',
-    escuela:  'Preparatoria 2 de Octubre de 1968',
-    bio:      'Apasionado de la electronica y el diseño de circuitos orientados a la mecatrónica.',
+    nombre: 'David Lezama Gonzales',
+    rol: 'Estudiante | Programador y encargado de electronica.',
+    escuela: 'Preparatoria 2 de Octubre de 1968',
+    bio: 'Apasionado de la electronica y el diseño de circuitos orientados a la mecatrónica.',
+  },
+  {
+    nombre: 'Aldo Gustavo Aponte Peña',
+    rol: 'Maestro | Encargado de la guía del proyecto y asesoramiento.',
+    escuela: 'Preparatoria 2 de Octubre de 1968',
+    bio: 'Ingeniero Quimico en materiales muy pro.',
   },
 ]
 
 export const COMPONENTES: ComponenteProyecto[] = [
   {
-    id:          'esp32',
-    titulo:      'Microcontrolador ESP32',
-    categoria:   'hardware',
+    id: 'esp32',
+    titulo: 'Microcontrolador ESP32',
+    categoria: 'hardware',
     descripcion: 'Cerebro del sistema de monitoreo.',
     detalles: [
       'Doble núcleo Xtensa LX6 a 240 MHz',
@@ -34,9 +40,9 @@ export const COMPONENTES: ComponenteProyecto[] = [
     ],
   },
   {
-    id:          'mq2',
-    titulo:      'Sensor MQ-2',
-    categoria:   'sensor',
+    id: 'mq2',
+    titulo: 'Sensor MQ-2',
+    categoria: 'sensor',
     descripcion: 'Detección de GLP, metano, hidrógeno y humo.',
     detalles: [
       'Rango de detección: 300–10,000 ppm',
@@ -47,9 +53,9 @@ export const COMPONENTES: ComponenteProyecto[] = [
     ],
   },
   {
-    id:          'mq7',
-    titulo:      'Sensor MQ-7',
-    categoria:   'sensor',
+    id: 'mq7',
+    titulo: 'Sensor MQ-7',
+    categoria: 'sensor',
     descripcion: 'Detección de monóxido de carbono (CO).',
     detalles: [
       'Rango de detección: 20–2,000 ppm',
@@ -60,9 +66,9 @@ export const COMPONENTES: ComponenteProyecto[] = [
     ],
   },
   {
-    id:          'mq135',
-    titulo:      'Sensor MQ-135',
-    categoria:   'sensor',
+    id: 'mq135',
+    titulo: 'Sensor MQ-135',
+    categoria: 'sensor',
     descripcion: 'Detección de NH₃, VOC, CO₂ y contaminantes urbanos.',
     detalles: [
       'Rango: 10–300 ppm (NH₃)',
@@ -73,9 +79,9 @@ export const COMPONENTES: ComponenteProyecto[] = [
     ],
   },
   {
-    id:          'servidor',
-    titulo:      'Backend Firebase',
-    categoria:   'software',
+    id: 'servidor',
+    titulo: 'Backend Firebase',
+    categoria: 'software',
     descripcion: 'Infraestructura en la nube para almacenamiento en tiempo real.',
     detalles: [
       'Firestore NoSQL para historial de lecturas',
@@ -86,9 +92,9 @@ export const COMPONENTES: ComponenteProyecto[] = [
     ],
   },
   {
-    id:          'http',
-    titulo:      'Protocolo HTTP / WiFi',
-    categoria:   'comunicacion',
+    id: 'http',
+    titulo: 'Protocolo HTTP / WiFi',
+    categoria: 'comunicacion',
     descripcion: 'Canal de transmisión de datos entre baliza y servidor.',
     detalles: [
       'ESP32 actúa como cliente HTTP',
@@ -101,22 +107,22 @@ export const COMPONENTES: ComponenteProyecto[] = [
 ]
 
 export const BALIZA_DEMO: Baliza = {
-  id:       'baliza-001',
-  nombre:   'Baliza Principal',
-  lat:      20.049,
-  lng:      -102.052,
-  activa:   true,
+  id: 'baliza-001',
+  nombre: 'Baliza Principal',
+  lat: 20.049,
+  lng: -102.052,
+  activa: true,
   firmware: 'v1.0.0',
 }
 
 export function generarLecturaDemo(offsetSeg = 0) {
   const t = new Date(Date.now() - offsetSeg * 1000)
   return {
-    id:         `demo-${t.getTime()}`,
-    timestamp:  t,
-    mq2_ppm:    Math.max(0, 120 + (Math.random() - 0.5) * 500),
-    mq7_ppm:    Math.max(0,  28 + (Math.random() - 0.5) *  80),
-    mq135_ppm:  Math.max(0,  45 + (Math.random() - 0.5) *  60),
-    fuente:     'demo' as const,
+    id: `demo-${t.getTime()}`,
+    timestamp: t,
+    mq2_ppm: Math.max(0, 120 + (Math.random() - 0.5) * 500),
+    mq7_ppm: Math.max(0, 28 + (Math.random() - 0.5) * 80),
+    mq135_ppm: Math.max(0, 45 + (Math.random() - 0.5) * 60),
+    fuente: 'demo' as const,
   }
 }
