@@ -1,5 +1,4 @@
 // src/components/sections/About.tsx
-'use client'
 import { BookOpen, Users, Leaf } from 'lucide-react'
 import { AUTORES } from '@/lib/constants'
 import { BentoCard, CANOPEA_GLOW, CANOPEA_GLOW_CYAN } from '@/components/BentoCard'
@@ -14,8 +13,7 @@ export default function About() {
         <div className="mb-16 text-center">
           <span className="text-xs font-mono tracking-widest text-lime uppercase">01 · Acerca del proyecto</span>
           <ScrollFloat
-            containerClassName="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4"
-            textClassName="gradient-text"
+            textClassName="text-2xl sm:text-3xl md:text-4xl font-display font-bold mt-3 mb-4 text-balance"
             animationDuration={0.9}
             stagger={0.025}
           >

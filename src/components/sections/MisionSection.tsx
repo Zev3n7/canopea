@@ -1,5 +1,4 @@
 // src/components/sections/MisionSection.tsx
-'use client'
 import { Target, Eye, Heart, Zap, Code2 } from 'lucide-react'
 import { BentoCard, CANOPEA_GLOW, CANOPEA_GLOW_CYAN } from '@/components/BentoCard'
 

@@ -1,5 +1,4 @@
 // src/components/sections/Hero.tsx
-'use client'
 import dynamic from 'next/dynamic'
 import { ArrowDown, Github, Activity } from 'lucide-react'
 import Link from 'next/link'
@@ -77,18 +76,8 @@ export default function Hero() {
             href="https://github.com/Zev3n7/canopea"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-3 rounded text-sm font-mono transition-all duration-200 hover:-translate-y-0.5"
-            style={{ background: 'transparent', border: '1px solid #095544', color: '#AAC8C4' }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement
-              el.style.borderColor = 'rgba(0,223,129,0.3)'
-              el.style.color = '#F1F7F6'
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement
-              el.style.borderColor = '#095544'
-              el.style.color = '#AAC8C4'
-            }}
+            className="flex items-center gap-2 px-6 py-3 rounded text-sm font-mono transition-all duration-200 hover:-translate-y-0.5 border border-border-green text-text2 hover:border-lime/30 hover:text-text"
+            style={{ background: 'transparent' }}
           >
             <Github className="w-4 h-4" />
             Código en GitHub

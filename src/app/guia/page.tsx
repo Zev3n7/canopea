@@ -1,18 +1,20 @@
 // src/app/guia/page.tsx
 'use client'
 import { useState } from 'react'
-import { BookOpen, Cpu, FileText } from 'lucide-react'
+import { BookOpen, Cpu, FileText, Image } from 'lucide-react'
 import PageHeroBanner from '@/components/layout/PageHeroBanner'
 import TabGuia        from '@/components/guia/TabGuia'
 import TabSistema     from '@/components/guia/TabSistema'
 import TabFuentes     from '@/components/guia/TabFuentes'
+import TabProcedimiento from '@/components/guia/TabProcedimiento'
 
-type Tab = 'guia' | 'mapa' | 'fuentes'
+type Tab = 'guia' | 'mapa' | 'fuentes' | 'procedimiento'
 
 const tabs: { id: Tab; label: string; Icon: React.ElementType }[] = [
   { id: 'guia',    label: 'Temas',   Icon: BookOpen  },
   { id: 'mapa',    label: 'Sistema', Icon: Cpu       },
   { id: 'fuentes', label: 'Fuentes', Icon: FileText  },
+  { id: 'procedimiento', label: 'Procedimiento', Icon: Image },
 ]
 
 export default function GuiaPage() {
@@ -54,6 +56,7 @@ export default function GuiaPage() {
           {activeTab === 'guia'    && <TabGuia />}
           {activeTab === 'mapa'    && <TabSistema />}
           {activeTab === 'fuentes' && <TabFuentes />}
+          {activeTab === 'procedimiento' && <TabProcedimiento />}
         </div>
 
         {/* Footer strip */}

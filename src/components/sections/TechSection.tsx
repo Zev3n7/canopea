@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 // Para modificar los logos: edita el array DEFAULT_LOGOS en src/components/LogoLoop.tsx
 // O pasa tu propio array de logos como prop `items`
-'use client'
+// O pasa tu propio array de logos como prop `items`
 import dynamic from 'next/dynamic'
 import { Cpu } from 'lucide-react'
 import ScrollFloat from '@/components/ScrollFloat'
@@ -19,19 +19,19 @@ export default function TechSection() {
           <Cpu className="w-4 h-4 text-lime/60" />
           <ScrollFloat
             containerClassName="!my-0"
-            textClassName="text-xs font-mono tracking-[0.3em] text-text3 uppercase"
+            textClassName="text-[10px] sm:text-xs font-mono tracking-[0.1em] sm:tracking-[0.3em] text-text3 uppercase text-center"
             animationDuration={0.8}
             stagger={0.02}
           >
             Stack tecnológico del proyecto
           </ScrollFloat>
-          <Cpu className="w-4 h-4 text-lime/60" />
+          <Cpu className="w-4 h-4 text-lime/60 hidden sm:block" />
         </div>
 
         <LogoLoop speed={55} pauseOnHover />
 
         {/* Edit hint */}
-        <p className="text-center mt-8 text-[10px] font-mono text-text3/50 tracking-widest">
+        <p className="text-center mt-8 text-[9px] sm:text-[10px] font-mono text-text3/50 tracking-wider sm:tracking-widest leading-relaxed px-2">
           CANOPEA · ESP32 · MQ SENSORS · NEXT.JS · FIREBASE · MIT LICENSE
         </p>
       </div>

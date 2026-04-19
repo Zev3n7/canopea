@@ -1,5 +1,4 @@
 // src/components/sections/SensoresSection.tsx
-'use client'
 import dynamic from 'next/dynamic'
 import { Wind, Flame, Beaker, MapPin } from 'lucide-react'
 import { BALIZA_DEMO } from '@/lib/constants'

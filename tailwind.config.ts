@@ -49,9 +49,9 @@ const config: Config = {
         'border-green': '#095544',   // divisores
 
         // Text
-        text:           '#F1F7F6',
-        text2:          '#AAC8C4',
-        text3:          '#707D7D',
+        text:           '#FFFFFF',
+        text2:          '#F1F7F6',
+        text3:          '#F1F7F6',
       },
       fontFamily: {
         sans:    ['"Space Grotesk"', 'system-ui', 'sans-serif'],

@@ -10,352 +10,261 @@ export interface Topic {
 }
 
 export interface Section {
-  id:          string
-  icon:        string      // kept for semantic value, replaced by icon component in UI
-  color:       string      // DEPRECATED – keep for TS compat, UI ignores it
-  title:       string
-  subtitle:    string
-  badge:       string
-  topics:      Topic[]
-  formula:     string
+  id: string
+  icon: string      // kept for semantic value, replaced by icon component in UI
+  color: string      // DEPRECATED – keep for TS compat, UI ignores it
+  title: string
+  subtitle: string
+  badge: string
+  topics: Topic[]
+  formula: string
   formulaNote: string
 }
 
 export interface Pregunta {
-  q:    string
+  q: string
   tema: string
 }
 
 export interface FlujoStep {
   label: string
   color: string   // DEPRECATED – UI uses accent
-  icon:  string
-  desc:  string
+  icon: string
+  desc: string
 }
 
 export interface Fuente {
-  icon:      string
-  color:     string   // DEPRECATED – UI ignores
-  titulo:    string
-  url:       string
-  aporte:    string
+  icon: string
+  color: string   // DEPRECATED – UI ignores
+  titulo: string
+  url: string
+  aporte: string
   conceptos: string[]
 }
 
 // ── Sections ─────────────────────────────────────────────────────────────────
 export const sections: Section[] = [
   {
-    id:       'semiconductores',
-    icon:     '⚛',
-    color:    '#00DF81',
-    title:    '1. Física de Semiconductores',
+    id: 'semiconductores',
+    icon: '⚛',
+    color: '#00DF81',
+    title: '1. Física de Semiconductores',
     subtitle: 'La base de los sensores MQ',
-    badge:    'FUNDAMENTAL',
+    badge: 'FUNDAMENTAL',
     topics: [
       {
         q: '¿Qué es un semiconductor?',
-        a: 'Material cuya conductividad eléctrica está entre un conductor y un aislante. Su resistencia disminuye al aumentar la temperatura (comportamiento opuesto a los metales). El bandgap del SnO₂ ≈ 3.6 eV permite la activación térmica de electrones y la adsorción de gases en su superficie.',
+        a: 'Es un sólido cristalino cuya conductividad eléctrica es intermedia entre conductores y aislantes. Se rige por la Teoría de Bandas; el dióxido de estaño ($SnO_2$) posee un bandgap de $\\approx 3.6$ eV [4]. A diferencia de los metales, su resistividad disminuye con el aumento de la temperatura debido a la generación térmica de portadores de carga.',
       },
       {
         q: '¿Por qué SnO₂ en los sensores MQ?',
-        a: 'Los sensores MQ usan un tubo de cerámica Al₂O₃ recubierto con SnO₂. En aire limpio, el SnO₂ conduce poco (alta resistencia). Cuando las moléculas de gas objetivo contactan la superficie calentada, son adsorbidas y cambian las propiedades eléctricas, reduciendo Rs. Es un sensor tipo MOS (Metal Oxide Semiconductor).',
+        a: 'El $SnO_2$ es un Óxido Metálico Semiconductor (MOS). En aire limpio, los iones de oxígeno adsorbidos atrapan electrones de la banda de conducción, creando una barrera de potencial alta (resistencia elevada). Al interactuar con gases reductores, estos reaccionan con el oxígeno, liberando electrones y disminuyendo la resistencia del material ($R_s$) [1, 2].',
       },
       {
         q: 'Tipo N y portadores de carga',
-        a: 'SnO₂ es semiconductor tipo N: los portadores mayoritarios son electrones. El O₂ adsorbido en la superficie crea una zona de agotamiento (depletion layer) que limita la corriente. Los gases reductores (CO, H₂, LPG) donan electrones al SnO₂, reducen la zona de agotamiento y bajan drásticamente Rs.',
+        a: 'El $SnO_2$ es intrínsecamente tipo N, donde los electrones son los portadores mayoritarios. La quimisorción de gases altera la densidad de estos electrones en la superficie del grano semiconductor, modificando la conductividad superficial según la concentración del analito en el ambiente [2, 4].',
       },
       {
         q: 'También conocidos como Chemiresistores',
-        a: 'Los sensores MQ de la serie Hanwei son chemiresistores: la detección depende del cambio en la resistencia del material sensible cuando el gas entra en contacto con él. Esta resistencia variable se convierte en voltaje usando el divisor de tensión del circuito, lo que permite medirla con el ADC del ESP32.',
+        a: 'Pertenecen a la clase de transductores quimiorresistivos: dispositivos cuya resistencia eléctrica varía proporcionalmente a la presión parcial de especies químicas adsorbidas. Esta variación se traduce en una señal de tensión mediante un circuito divisor de potencial compatible con el ADC del ESP32 [1, 11].',
       },
     ],
-    formula:     'R_sensor ∝ [Gas]⁻ⁿ   (n ≈ 0.5)',
-    formulaNote: 'Relación potencial entre resistencia y concentración de gas',
+    formula: '$$ R_s = A \\cdot [Gas]^{-n} $$',
+    formulaNote: 'Relación empírica entre resistencia y concentración de gas [11]',
   },
   {
-    id:       'ohm',
-    icon:     '⚡',
-    color:    '#00DF81',
-    title:    '2. Ley de Ohm & Circuitos',
+    id: 'ohm',
+    icon: '⚡',
+    color: '#00DF81',
+    title: '2. Ley de Ohm & Circuitos',
     subtitle: 'Señal eléctrica del transductor',
-    badge:    'ELÉCTRICO',
+    badge: 'ELÉCTRICO',
     topics: [
       {
         q: 'Divisor de voltaje — corazón del circuito MQ',
-        a: 'La concentración de gas se puede sensar con una red divisora de voltaje simple (Rs en serie con RL ≈ 20kΩ para MQ-135). Vout = Vcc × RL / (Rs + RL). Al disminuir Rs por presencia de gas reductor, Vout aumenta proporcionalmente.',
+        a: 'Para convertir el cambio de resistencia en una señal medible, se utiliza un divisor de tensión. La tensión de salida ($V_{out}$) se obtiene mediante la relación de $R_s$ y una resistencia de carga fija $R_L$. Según la Ley de Ohm, un aumento en la conductividad del sensor provoca un incremento proporcional en $V_{out}$ [3, 11].',
       },
       {
         q: 'ADC del ESP32 — de voltaje a número',
-        a: 'El ESP32 tiene un ADC integrado de 12 bits. Convierte Vout (0–3.3V) en un entero 0–4095. Resolución ≈ 0.8 mV por unidad. Pines ADC: GPIO 32–39. El ADC nativo del ESP32 tiene cierta no-linealidad en sus extremos; se recomienda calibrar o usar la función esp_adc_cal.',
+        a: 'El ESP32 emplea un convertidor analógico-digital de 12 bits para cuantificar $V_{out}$. Transforma señales de 0 a 3.3V en valores discretos (0-4095). Es crítico considerar la no-linealidad del ADC y la caída de tensión en $R_L$ para obtener lecturas de precisión científica [11].',
       },
       {
         q: 'Transferencia de electrones gas-sólido',
-        a: 'Los gases reductores reaccionan con el O₂ adsorbido en el SnO₂, liberando electrones hacia la banda de conducción. Esto aumenta la densidad de portadores → menor resistencia → mayor corriente → mayor Vout. Es una transferencia cuántica de carga que obedece la Ley de Ohm a nivel macroscópico.',
+        a: 'Microscópicamente, el flujo de corriente obedece a $J = \\sigma \\cdot E$. La interacción química modifica la conductividad ($\\sigma$) del semiconductor al variar la densidad de portadores libres, permitiendo que la Ley de Ohm describa el comportamiento macroscópico del sensor ante el gas [3, 4].',
       },
       {
         q: 'Calentador interno y ciclos del MQ-7',
-        a: 'Cada MQ tiene un calefactor interno (Rh ≈ 33Ω). El MQ-7 usa ciclos especiales: 60s a 5V (alta T°, limpia la superficie de CO) y luego 90s a 1.4V (baja T°, óptima para adsorber CO nuevo). El ESP32 puede controlar este ciclo con un transistor o módulo de relay.',
+        a: 'El sensor requiere energía térmica para alcanzar la energía de activación necesaria. El MQ-7 opera en ciclos: 60s a 5V (limpieza térmica) y 90s a 1.4V (fase de detección de CO). Este control de temperatura es vital para la selectividad química del dispositivo [1].',
       },
     ],
-    formula:     'Vout = Vcc × RL / (Rs + RL)',
-    formulaNote: 'Salida del divisor → entrada al ADC del ESP32',
+    formula: '$$ V_{out} = V_{cc} \\cdot \\frac{R_L}{R_s + R_L} $$',
+    formulaNote: 'Ecuación del divisor de tensión para transductores resistivos',
   },
   {
-    id:       'termico',
-    icon:     '◈',
-    color:    '#00DF81',
-    title:    '3. Transferencia de Calor',
+    id: 'termico',
+    icon: '◈',
+    color: '#00DF81',
+    title: '3. Transferencia de Calor',
     subtitle: 'Conducción, convección y temperatura',
-    badge:    'TERMODINÁMICA',
+    badge: 'TERMODINÁMICA',
     topics: [
       {
         q: 'Conducción en el sensor',
-        a: 'El calor del filamento calefactor se transfiere por conducción a la capa de SnO₂. Ley de Fourier: Q/t = k·A·ΔT/d. El cilindro de acero inoxidable actúa como conductor y protector. La cerámica Al₂O₃ mejora la eficiencia de calentamiento y garantiza temperatura estable en la zona sensible.',
+        a: 'El calor se transfiere desde el filamento interno de Ni-Cr hacia la capa de $SnO_2$ mediante conducción sólida a través de un sustrato cerámico de $Al_2O_3$. Se rige por la Ley de Fourier, donde el flujo de calor es proporcional al gradiente térmico $\\Delta T$ [1, 5].',
       },
       {
         q: 'Convección de gases hacia el sensor',
-        a: 'La malla metálica del sensor permite el flujo convectivo de aire hacia el elemento sensible. En la baliza exterior, las corrientes de viento crean flujo convectivo forzado que transporta moléculas de gas hasta la superficie de SnO₂. Mayor convección → más rápido llegan los gases → respuesta más veloz.',
+        a: 'El transporte de las moléculas de gas desde el ambiente hasta la malla del sensor ocurre por convección (natural o forzada). La temperatura del sensor genera corrientes convectivas locales que facilitan la renovación de la muestra de aire en la superficie sensible [5, 10].',
       },
       {
         q: 'Temperatura óptima de operación',
-        a: 'MQ-7: 150–350°C, MQ-2: 200–300°C, MQ-135: 20–200°C (temperatura de la capa sensible, no ambiente). A T° óptima, la tasa de adsorción es máxima y la selectividad mejora. El calefactor interno lleva el SnO₂ a esta T°. La temperatura ambiente afecta secundariamente la Rs.',
+        a: 'Cada sensor tiene una temperatura de trabajo específica (ej. MQ-135: 20-200°C en la capa sensible) para maximizar la quimisorción. Una temperatura inadecuada desplaza el equilibrio químico y altera la sensibilidad y selectividad del MOS [1, 2].',
       },
       {
         q: 'Humedad como variable de interferencia',
-        a: 'Las curvas de calibración del datasheet MQ-135 se miden a T=20°C y HR=65%. A mayor humedad relativa, el vapor de agua compite por sitios de adsorción en el SnO₂, alterando Rs. El ESP32 puede recibir datos de un sensor DHT22 para compensar las lecturas de los MQ.',
+        a: 'El vapor de agua actúa como gas interferente. Debido a la transferencia de calor latente y la adsorción de moléculas de $H_2O$, la resistencia del sensor varía. Es imperativo compensar estas lecturas utilizando sensores adicionales (como el DHT22) y algoritmos de corrección [11].',
       },
     ],
-    formula:     'Q/t = k·A·ΔT/L',
-    formulaNote: 'Ley de Fourier — conducción de calor en el sensor',
+    formula: '$$ \\dot{Q} = -k \\cdot A \\cdot \\nabla T $$',
+    formulaNote: 'Ley de Fourier — conducción térmica en el sustrato cerámico',
   },
   {
-    id:       'cinetica',
-    icon:     '◎',
-    color:    '#00DF81',
-    title:    '4. Teoría Cinética de los Gases',
+    id: 'cinetica',
+    icon: '◎',
+    color: '#00DF81',
+    title: '4. Teoría Cinética de los Gases',
     subtitle: 'Movimiento molecular y velocidad',
-    badge:    'MECÁNICA',
+    badge: 'MECÁNICA',
     topics: [
       {
-        q: 'Velocidad cuadrática media y respuesta del sensor',
-        a: 'vrms = √(3RT/M). A mayor temperatura ambiental, las moléculas viajan más rápido y colisionan con mayor frecuencia con el SnO₂. Esto aumenta la tasa de adsorción y hace que el sensor responda más rápido. Cada gas (CO, NH₃, LPG) tiene masa molar M diferente → velocidades distintas.',
+        q: 'Velocidad cuadrática media y respuesta',
+        a: 'La velocidad de las moléculas de gas ($v_{rms}$) es proporcional a $\\sqrt{T/M}$. A mayor temperatura, el aumento de la energía cinética incrementa la frecuencia de colisiones moleculares contra la superficie del sensor, acelerando el tiempo de respuesta [6, 7].',
       },
       {
         q: 'Presión parcial en mezclas de gas',
-        a: 'En el aire (mezcla de N₂, O₂ y contaminantes), cada gas ejerce su presión parcial Pi = niKT. El MQ-135 responde a la presión parcial de cada contaminante. Si coexisten NH₃ y CO₂, ambos afectan Rs simultáneamente → la respuesta del sensor es la suma de los efectos → baja selectividad.',
+        a: 'Según la Ley de Dalton, la presión total es la suma de las presiones parciales. El sensor responde a la fracción molar del contaminante. La teoría cinética explica que la presión es el resultado del intercambio de cantidad de movimiento durante las colisiones elásticas de las partículas contra las paredes [6, 7].',
       },
       {
         q: 'Distribución de Maxwell-Boltzmann',
-        a: 'Las velocidades moleculares siguen esta distribución estadística: no todas tienen la misma energía. Solo las moléculas con energía suficiente superan la barrera de activación para quimisorberse en el SnO₂. El calefactor interno eleva T° y con ello el número de moléculas con energía suficiente.',
+        a: 'No todas las moléculas tienen la misma energía. Solo aquellas en la "cola" de la distribución con energía superior a la barrera de activación logran quimisorberse. El calentador del sensor desplaza la distribución hacia energías más altas, aumentando la tasa de reacción [7].',
       },
       {
-        q: 'Libre recorrido medio λ',
-        a: 'λ = kT/(√2·π·d²·P). A presión atmosférica normal (1 atm, 20°C), λ ≈ 68 nm para N₂. El libre recorrido medio determina la frecuencia de colisiones entre moléculas de gas. Moléculas más ligeras (H₂) tienen mayor λ → llegan antes al sensor → MQ-2 responde más rápido al H₂ que al LPG.',
+        q: 'Libre recorrido medio \\lambda',
+        a: 'Es la distancia promedio que recorre una partícula entre colisiones sucesivas. En gases ligeros como el $H_2$, $\\lambda$ es mayor, lo que facilita una difusión más rápida a través de la malla protectora del sensor en comparación con moléculas más pesadas como el LPG [6, 10].',
       },
     ],
-    formula:     'v_rms = √(3RT/M)',
-    formulaNote: 'Mayor T → mayor vrms → mayor tasa de adsorción',
+    formula: '$$ v_{rms} = \\sqrt{\\frac{3RT}{M}} $$',
+    formulaNote: 'Relación entre temperatura absoluta y velocidad molecular [6]',
   },
   {
-    id:       'difusion',
-    icon:     '~',
-    color:    '#00DF81',
-    title:    '5. Difusión y Mecánica de Fluidos',
+    id: 'difusion',
+    icon: '~',
+    color: '#00DF81',
+    title: '5. Difusión y Mecánica de Fluidos',
     subtitle: 'Transporte molecular al sensor',
-    badge:    'FLUIDOS',
+    badge: 'FLUIDOS',
     topics: [
       {
         q: 'Primera Ley de Fick — flujo de masa',
-        a: 'J = -D·(dC/dx). El flujo de moléculas de gas es proporcional al gradiente de concentración. Los gases fluyen de alta concentración (fuente de contaminación) a baja concentración (alrededor del sensor). D para CO en aire ≈ 0.208 cm²/s; para NH₃ ≈ 0.198 cm²/s a 25°C.',
+        a: 'El transporte de contaminantes hacia el sensor se debe principalmente a la difusión molecular, impulsada por el gradiente de concentración ($dC/dx$). El gas se mueve espontáneamente desde la fuente de emisión hacia la superficie del sensor donde la concentración es menor debido a la adsorción [8, 9].',
       },
       {
         q: 'Segunda Ley de Fick — lag time del sensor',
-        a: '∂C/∂t = D·(∂²C/∂x²). Explica el retardo (lag time) observable entre la exposición al gas y la respuesta del sensor. La concentración dentro del housing del sensor tarda en equilibrarse con el exterior. Este retraso es importante al calibrar la frecuencia de muestreo del ESP32.',
+        a: 'Describe cómo cambia la concentración con el tiempo. El tiempo de respuesta del sensor está limitado por la difusión a través de la capa porosa de $SnO_2$ y la malla de acero, lo que genera un retardo temporal en la señal eléctrica tras un cambio súbito en el ambiente [9, 11].',
       },
       {
-        q: 'Flujo laminar vs turbulento en la baliza exterior',
-        a: 'Re = ρvL/μ determina el régimen de flujo. En condiciones de viento (baliza exterior), predomina flujo turbulento que aumenta el transporte convectivo de gas al sensor. Esto acelera la respuesta pero puede crear lecturas ruidosas. El diseño de los orificios de ventilación de la carcasa es clave.',
+        q: 'Flujo laminar vs turbulento',
+        a: 'El número de Reynolds ($Re$) determina el régimen de flujo de aire alrededor de la baliza. En condiciones de viento exterior, el flujo turbulento puede aumentar la tasa de transporte por convección, pero también introducir ruido estocástico en las mediciones del ADC [8, 10].',
       },
       {
-        q: 'Difusión y diseño de la carcasa de la baliza',
-        a: 'La ubicación y tamaño de los orificios de ventilación afecta el tiempo de respuesta: orificios grandes → más difusión → respuesta rápida pero más exposición al ambiente. Orificios pequeños → protección contra lluvia/polvo pero respuesta lenta. Es un compromiso ingenieril basado en física de fluidos.',
+        q: 'Difusión y diseño de la carcasa',
+        a: 'La geometría de los orificios de la baliza debe permitir una difusión eficiente sin exponer el sensor a flujos de aire excesivos que puedan enfriar la capa sensible, alterando el equilibrio térmico necesario para la detección precisa [8, 11].',
       },
     ],
-    formula:     'J = -D · (dC/dx)',
-    formulaNote: 'Primera Ley de Fick — transporte molecular al sensor',
+    formula: '$$ J = -D \\cdot \\frac{\\partial C}{\\partial x} $$',
+    formulaNote: 'Primera Ley de Fick — difusión molecular en fase gaseosa',
   },
   {
-    id:       'transductor',
-    icon:     '↺',
-    color:    '#00DF81',
-    title:    '6. El Sensor como Transductor',
+    id: 'transductor',
+    icon: '↺',
+    color: '#00DF81',
+    title: '6. El Sensor como Transductor',
     subtitle: 'De adsorción a señal digital',
-    badge:    'INTEGRADOR',
+    badge: 'INTEGRADOR',
     topics: [
       {
         q: 'Definición de transductor quimioresistivo',
-        a: 'Un transductor convierte una forma de energía o fenómeno en otro. Los MQ son quimioresistivos: la adsorción de moléculas (fenómeno químico-físico) produce un cambio en Rs del SnO₂ (señal eléctrica), que se convierte en voltaje (Ohm) y luego en un número digital en el ESP32 (señal discreta).',
+        a: 'Dispositivo que convierte una magnitud química (concentración de gas) en una magnitud eléctrica (resistencia). Este proceso implica múltiples etapas físicas: transporte de masa, quimisorción superficial y transducción de carga eléctrica [2, 11].',
       },
       {
         q: 'Fisisorción vs Quimisorción',
-        a: 'Fisisorción: adherencia por fuerzas de Van der Waals, débil y reversible, no cambia significativamente Rs. Quimisorción: formación de enlace químico con transferencia de electrones, fuerte y reversible al calentar, es la que genera el cambio medible en Rs. El calefactor favorece la quimisorción.',
+        a: 'La fisisorción (fuerzas de Van der Waals) es débil y no altera significativamente la resistencia. La quimisorción implica una transferencia real de electrones entre el gas y el $SnO_2$, siendo el proceso responsable de la señal útil en los sensores MQ [2, 4].',
       },
       {
         q: 'Calibración Rs/R0 y cálculo de ppm',
-        a: 'R0 es la resistencia medida en aire limpio (calibración inicial). Rs es la resistencia con gas. El ESP32 calcula Rs/R0 a partir del voltaje ADC: Rs = RL × (Vcc - Vout)/Vout. Luego aplica regresión: ppm = a·(Rs/R0)^b, donde a y b son constantes del datasheet específicas por gas.',
+        a: 'La relación $R_s/R_0$ normaliza la respuesta. $R_0$ es la resistencia en aire limpio. Utilizando las curvas de sensibilidad de los datasheets, se aplica una regresión logarítmica para transformar la señal eléctrica en unidades de concentración (partes por millón) [1, 11].',
       },
       {
         q: 'Cadena completa de conversión',
-        a: 'Gas en ambiente → Difusión (Fick) → Colisión con SnO₂ → Quimisorción → Cambio en Rs → Cambio en Vout (Ohm) → ADC ESP32 12 bits → Cálculo Rs/R0 → ppm → WiFi HTTP/MQTT → Servidor → Página web con gráficas en tiempo real.',
+        a: 'Fenómeno químico $\\to$ Difusión (Fick) $\\to$ Reacción superficial $\\to$ Cambio de conductividad (Ohm) $\\to$ Conversión Analógica-Digital $\\to$ Procesamiento Digital (ESP32) $\\to$ Transmisión de datos (IoT) [11].',
       },
     ],
-    formula:     'ppm = a · (Rs/R0)^b',
-    formulaNote: 'Regresión logarítmica del datasheet MQ',
+    formula: '$$ \\log(ppm) = m \\cdot \\log(R_s/R_0) + b $$',
+    formulaNote: 'Transformación lineal para el cálculo de concentración',
   },
-  {
-    id:       'esp32',
-    icon:     '□',
-    color:    '#00DF81',
-    title:    '7. ESP32 — Microcontrolador IoT',
-    subtitle: 'Cerebro del sistema de la baliza',
-    badge:    'IOT',
-    topics: [
-      {
-        q: 'Características físicas del ESP32',
-        a: 'Procesador dual-core Xtensa LX6 a 240 MHz. WiFi 802.11 b/g/n integrado a 2.4 GHz (no soporta 5 GHz) y Bluetooth 4.2/BLE. ADC de 12 bits (0–4095). Opera a 3.3V lógica. Consumo: ~160 mA en transmisión WiFi, ~30 mA en recepción. Costo: USD 5–15 por unidad.',
-      },
-      {
-        q: 'Lectura de los sensores MQ con ADC',
-        a: 'Los sensores MQ funcionan a 5V pero los pines ADC del ESP32 soportan máximo 3.3V. Solución: alimentar Rs y RL con 3.3V del ESP32, o usar un divisor resistivo para reducir Vout. Pines ADC: GPIO 32–39. La librería MQUnifiedsensor simplifica el cálculo de Rs, R0 y ppm.',
-      },
-      {
-        q: 'WiFi y protocolos de envío de datos',
-        a: 'Con las librerías WiFi.h y HTTPClient.h, el ESP32 se conecta a la red local y envía datos al servidor mediante HTTP GET/POST. Alternativa: protocolo MQTT (librería PubSubClient.h): el ESP32 publica en topics como "baliza/mq7/co" y el servidor se suscribe. MQTT es más eficiente energéticamente.',
-      },
-      {
-        q: 'Ciclo de medición y frecuencia de muestreo',
-        a: 'El ESP32 lee los 3 sensores en cada iteración del loop(): lee ADC → calcula Rs/R0 → calcula ppm → formatea JSON → envía por WiFi. Período recomendado: cada 10–30 segundos para no saturar el servidor. El MQ-7 necesita lógica de ciclo de calentamiento (60s a 5V + 90s a 1.4V) implementada en el firmware.',
-      },
-    ],
-    formula:     'ADC_valor = (Vout / 3.3V) × 4095',
-    formulaNote: 'Conversión analógico-digital de 12 bits del ESP32',
-  },
-  {
-    id:       'servidor',
-    icon:     '◉',
-    color:    '#00DF81',
-    title:    '8. Servidor Web y Visualización',
-    subtitle: 'De datos a información en tiempo real',
-    badge:    'SOFTWARE',
-    topics: [
-      {
-        q: 'Arquitectura cliente-servidor del sistema',
-        a: 'El ESP32 actúa como cliente IoT que envía datos. El servidor recibe y almacena las lecturas. El navegador web es el cliente de visualización: consulta el servidor para mostrar gráficas de ppm en tiempo real sin necesidad de recargar la página.',
-      },
-      {
-        q: 'Opciones de virtualización del servidor',
-        a: 'Local: XAMPP o Node.js en PC de la red. Nube: ThingSpeak (gratuito, hasta 3M mensajes/año), Heroku, Railway. El propio ESP32 puede ser servidor web: levanta un WebServer en su IP local, sirve HTML/JavaScript desde flash y actualiza datos cada segundo con Ajax.',
-      },
-      {
-        q: 'Actualización en tiempo real — WebSocket y Ajax',
-        a: 'Para mostrar datos sin recargar la página se usan WebSockets (conexión persistente bidireccional) o Ajax polling (el navegador solicita datos cada N segundos). El servidor empuja (push) nuevos datos cada vez que el ESP32 los envía. La interfaz actualiza gráficas de ppm y estado AQI automáticamente.',
-      },
-      {
-        q: 'Índice de Calidad del Aire (AQI)',
-        a: 'La web calcula y muestra AQI combinando los 3 sensores: Excelente (0–50), Bueno (51–100), Moderado (101–150), Malo (151–200), Muy malo (201–300), Peligroso (>300). Cada nivel tiene un color distintivo. El servidor puede enviar alertas por email o notificación push cuando se supera un umbral.',
-      },
-    ],
-    formula:     'AQI = f(ppm_CO, ppm_LPG, ppm_NH₃)',
-    formulaNote: 'Índice compuesto calculado en el servidor web',
-  },
-  {
-    id:       'sensores',
-    icon:     '◈',
-    color:    '#00DF81',
-    title:    '9. Los Sensores MQ: Comparativa',
-    subtitle: 'MQ-2, MQ-7 y MQ-135 en detalle',
-    badge:    'APLICADO',
-    topics: [
-      {
-        q: 'MQ-2 — Gas inflamable y Humo',
-        a: 'Tipo: MOS / chemiresistor. Detecta: LPG, propano, hidrógeno, metano, humo. Rango: 300–10,000 ppm. Temperatura operación: 200–300°C. Contiene cerámica Al₂O₃ + capa SnO₂ + electrodo + calefactor + malla protectora de acero. Aplicación en baliza: detección de fugas de gas e incendios.',
-      },
-      {
-        q: 'MQ-7 — Monóxido de Carbono (CO)',
-        a: 'Detecta: CO principalmente. Rango: 20–2,000 ppm. Ciclo especial: 60s a 5V (alta T°, quema residuos en superficie) + 90s a 1.4V (baja T°, adsorbe CO nuevo). El CO es tóxico porque bloquea la hemoglobina. El ESP32 controla este ciclo con PWM o transistor.',
-      },
-      {
-        q: 'MQ-135 — Calidad del Aire (AQI)',
-        a: 'Material sensible: SnO₂. Alta sensibilidad a NH₃, sulfuro, vapores de benceno, humo y CO₂. Rango: 10–1,000 ppm. Calibrar: R0 medido a 100 ppm NH₃ o 50 ppm alcohol, RL ≈ 20kΩ. Temperatura operación: 20–200°C. Es el sensor más versátil de la baliza: genera el índice general AQI.',
-      },
-      {
-        q: 'Tiempo de precalentamiento y calibración',
-        a: 'Primera calibración: 24–48 horas de warm-up para que el SnO₂ se estabilice. En cada encendido: mínimo 20 minutos. El ESP32 puede esperar antes de enviar datos al servidor. La calibración consiste en medir R0 en aire limpio certificado y almacenarla en la memoria flash (EEPROM / NVS del ESP32).',
-      },
-    ],
-    formula:     'Rs/R0 = f(ppm, T°C, HR%)',
-    formulaNote: 'Función de calibración — curvas de sensibilidad del datasheet',
-  },
-]
-
-export const preguntas: Pregunta[] = [
-  { q: '¿Qué es un semiconductor y cómo difiere de un conductor?', tema: 'Semiconductores' },
-  { q: '¿Por qué se usa SnO₂ como material sensible en los sensores MQ?', tema: 'Semiconductores' },
-  { q: 'Explica la Ley de Ohm en el contexto del circuito divisor de voltaje del sensor MQ', tema: 'Ley de Ohm' },
-  { q: '¿Cómo convierte el ESP32 la señal analógica del sensor en un número digital?', tema: 'ESP32 IoT' },
-  { q: '¿Qué protocolos usa el ESP32 para enviar datos al servidor? ¿HTTP o MQTT? ¿Cuál es más eficiente?', tema: 'ESP32 IoT' },
-  { q: '¿Cómo afecta la temperatura la velocidad de las partículas de gas y la respuesta del sensor?', tema: 'Teoría Cinética' },
-  { q: '¿Qué es la difusión (Leyes de Fick) y por qué hay un lag time en la respuesta del sensor?', tema: 'Difusión' },
-  { q: '¿Cuál es la diferencia entre conducción y convección en el contexto del sensor MQ?', tema: 'Calor' },
-  { q: 'Describe el proceso completo de transducción desde el gas hasta la página web', tema: 'Sistema completo' },
-  { q: '¿Por qué los sensores necesitan tiempo de precalentamiento?', tema: 'Sensores MQ' },
-  { q: '¿Cómo se calcula la concentración en ppm a partir del voltaje leído por el ADC?', tema: 'Calibración' },
-  { q: '¿Por qué los sensores MQ tienen baja selectividad? ¿Cómo se compensa usando 3 sensores?', tema: 'Sensores MQ' },
-]
+];
 
 export const flujoSistema: FlujoStep[] = [
-  { label: 'GAS EN AMBIENTE',    color: '#00DF81', icon: '', desc: 'CO, LPG, NH₃, humo, benceno' },
-  { label: 'DIFUSIÓN (Fick)',    color: '#00DF81', icon: '', desc: 'J = -D·dC/dx → lag time' },
-  { label: 'ADSORCIÓN SnO₂',    color: '#00DF81', icon: '', desc: 'Quimisorción → e⁻ libres' },
+  { label: 'GAS EN AMBIENTE', color: '#00DF81', icon: '', desc: 'CO, LPG, NH₃, humo, benceno' },
+  { label: 'DIFUSIÓN (Fick)', color: '#00DF81', icon: '', desc: 'J = -D·dC/dx → lag time' },
+  { label: 'ADSORCIÓN SnO₂', color: '#00DF81', icon: '', desc: 'Quimisorción → e⁻ libres' },
   { label: 'CAMBIO EN Rs (Ohm)', color: '#00DF81', icon: '', desc: 'Rs↓ → Vout↑ (divisor voltaje)' },
-  { label: 'ADC ESP32 12 bits',  color: '#00DF81', icon: '', desc: '0–3.3V → 0–4095' },
-  { label: 'CÁLCULO ppm',        color: '#00DF81', icon: '', desc: 'ppm = a·(Rs/R0)^b' },
-  { label: 'WiFi HTTP / MQTT',   color: '#00DF81', icon: '', desc: 'ESP32 → Servidor (cada 10–30s)' },
-  { label: 'PÁGINA WEB (AQI)',   color: '#00DF81', icon: '', desc: 'Dashboard · Gráficas · Alertas' },
+  { label: 'ADC ESP32 12 bits', color: '#00DF81', icon: '', desc: '0–3.3V → 0–4095' },
+  { label: 'CÁLCULO ppm', color: '#00DF81', icon: '', desc: 'ppm = a·(Rs/R0)^b' },
+  { label: 'WiFi HTTP / MQTT', color: '#00DF81', icon: '', desc: 'ESP32 → Servidor (cada 10–30s)' },
+  { label: 'PÁGINA WEB (AQI)', color: '#00DF81', icon: '', desc: 'Dashboard · Gráficas · Alertas' },
 ]
 
 export const fuentes: Fuente[] = [
   {
-    icon:    '',
-    color:   '#00DF81',
-    titulo:  'Tutorial MQ2, MQ7, MQ135 — Naylamp Mechatronics',
-    url:     'naylampmechatronics.com/blog/42_tutorial-sensores-de-gas',
-    aporte:  'Tutorial práctico en español sobre la conexión y programación de los sensores MQ con microcontroladores. Explica el divisor de voltaje con RL, la calibración de R0, cómo obtener lecturas en ppm y cómo conectar los sensores a Arduino/ESP32.',
+    icon: '',
+    color: '#00DF81',
+    titulo: 'Tutorial MQ2, MQ7, MQ135 — Naylamp Mechatronics',
+    url: 'https://naylampmechatronics.com/blog/42_tutorial-sensores-de-gas-mq2-mq3-mq7-y-mq135.html#:~:text=En%20este%20tutorial%20vamos%20a%20trabajar%20con,(MQ7)%20y%20de%20calidad%20de%20aire%20(MQ-135)',
+    aporte: 'Tutorial práctico en español sobre la conexión y programación de los sensores MQ con microcontroladores. Explica el divisor de voltaje con RL, la calibración de R0, cómo obtener lecturas en ppm y cómo conectar los sensores a Arduino/ESP32.',
     conceptos: ['Divisor de voltaje con RL', 'Calibración de R0', 'Curvas de sensibilidad', 'Código ESP32'],
   },
   {
-    icon:    '',
-    color:   '#00DF81',
-    titulo:  'Air Quality Monitoring Using MQ135 & Arduino — ResearchGate 2025',
-    url:     'researchgate.net/publication/393126306',
-    aporte:  'Publicación académica que valida el uso del MQ-135 en sistemas de monitoreo de calidad del aire. Confirma el uso de SnO₂, la curva logarítmica Rs/R0 vs ppm, y la importancia de la temperatura y humedad como factores de interferencia.',
+    icon: '',
+    color: '#00DF81',
+    titulo: 'Air Quality Monitoring Using MQ135 & Arduino — ResearchGate 2025',
+    url: 'researchgate.net/publication/393126306',
+    aporte: 'Publicación académica que valida el uso del MQ-135 en sistemas de monitoreo de calidad del aire. Confirma el uso de SnO₂, la curva logarítmica Rs/R0 vs ppm, y la importancia de la temperatura y humedad como factores de interferencia.',
     conceptos: ['Rs/R0 vs ppm (log)', 'Compensación T° y HR%', 'Validación experimental', 'Sistema IoT'],
   },
   {
-    icon:    '',
-    color:   '#00DF81',
-    titulo:  'Metal Oxide Semiconductor Sensors — ScienceDirect 2025',
-    url:     'sciencedirect.com/article/pii/S1369800125010194',
-    aporte:  'Artículo sobre sensores MOS. Explica el mecanismo de detección a nivel molecular: la interacción de los gases con la superficie del SnO₂ involucra complejos enlazados a 3 átomos de carbono. Confirma que los sensores MQ son de tipo MOS/chemiresistor.',
+    icon: '',
+    color: '#00DF81',
+    titulo: 'Metal Oxide Semiconductor Sensors — ScienceDirect',
+    url: 'https://www.sciencedirect.com/science/article/abs/pii/S1369800125010194#:~:text=Among%20these%2C%20metal%20oxide%20semiconductor,bonded%20to%20three%20carbon%20atoms',
+    aporte: 'Artículo sobre sensores MOS. Explica el mecanismo de detección a nivel molecular: la interacción de los gases con la superficie del SnO₂ involucra complejos enlazados a 3 átomos de carbono. Confirma que los sensores MQ son de tipo MOS/chemiresistor.',
     conceptos: ['Mecanismo MOS molecular', 'Quimisorción en SnO₂', 'Enlace gas-superficie', 'Zona de depleción'],
   },
   {
-    icon:    '',
-    color:   '#00DF81',
-    titulo:  'ESP32-Based IoT Air Quality Monitoring — ResearchGate 2026',
-    url:     'researchgate.net/publication/399856873',
-    aporte:  'Estudio sobre sistemas ESP32 para monitoreo ambiental IoT. El ESP32 (dual-core 240 MHz, WiFi integrado, USD 5–15) es la plataforma estándar para redes distribuidas. Se reportó 94.2% de disponibilidad en 9 estaciones durante 36 meses.',
+    icon: '',
+    color: '#00DF81',
+    titulo: 'ESP32-Based IoT Air Quality Monitoring — ResearchGate 2026',
+    url: 'researchgate.net/publication/399856873',
+    aporte: 'Estudio sobre sistemas ESP32 para monitoreo ambiental IoT. El ESP32 (dual-core 240 MHz, WiFi integrado, USD 5–15) es la plataforma estándar para redes distribuidas. Se reportó 94.2% de disponibilidad en 9 estaciones durante 36 meses.',
     conceptos: ['ESP32 dual-core 240 MHz', 'WiFi 802.11 b/g/n', 'Redes distribuidas', 'MQTT protocolo IoT'],
+  },
+  {
+    icon: '',
+    color: '#00DF81',
+    titulo: 'Ley de Ohm — Portal Académico CCH UNAM',
+    url: 'https://portalacademico.cch.unam.mx/cibernetica1/implementacion-de-circuitos-logicos/ley-de-ohm',
+    aporte: 'Explicación teórica de la Ley de Ohm, principio eléctrico que permite convertir los cambios de resistencia del sensor MQ en un voltaje analógico escalable por el ADC del ESP32.',
+    conceptos: ['Ley de Ohm', 'División de tensión', 'Corriente', 'Resistencia'],
   },
 ]
 

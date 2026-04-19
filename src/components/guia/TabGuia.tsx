@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import { ChevronRight, GitFork } from 'lucide-react'
 import { sections } from '@/lib/guia-data'
+import MathText from '@/components/ui/MathText'
 
 // Un solo set de estilos — acento uniform para todas las secciones
 const ACCENT     = '#00DF81'
@@ -125,13 +126,14 @@ export default function TabGuia() {
                   className="my-3 rounded-lg py-2.5 px-4 text-center"
                   style={{ background: BG_EXPAND, border: `1px solid ${ACCENT}25` }}
                 >
-                  <div
-                    className="text-sm font-bold font-mono tracking-wide mb-1"
-                    style={{ color: ACCENT }}
-                  >
-                    {s.formula}
-                  </div>
-                  <div className="text-[10px]" style={{ color: '#707D7D' }}>{s.formulaNote}</div>
+                  <MathText
+                    content={s.formula}
+                    className="text-sm font-bold font-mono tracking-wide mb-1 block"
+                  />
+                  <MathText
+                    content={s.formulaNote}
+                    className="text-[10px] block"
+                  />
                 </div>
 
                 {/* Topics */}
@@ -148,7 +150,10 @@ export default function TabGuia() {
                       >
                         {t.q}
                       </p>
-                      <p className="text-xs leading-relaxed" style={{ color: '#AAC8C4' }}>{t.a}</p>
+                      <MathText
+                        content={t.a}
+                        className="text-xs leading-relaxed"
+                      />
                     </div>
                   ))}
                 </div>

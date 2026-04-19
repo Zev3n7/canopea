@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useMemo, useRef, ReactNode, RefObject } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -31,11 +32,20 @@ const ScrollFloat: React.FC<ScrollFloatProps> = ({
 
   const splitText = useMemo(() => {
     const text = typeof children === 'string' ? children : '';
-    return text.split('').map((char, index) => (
-      <span className="inline-block word" key={index}>
-        {char === ' ' ? '\u00A0' : char}
-      </span>
-    ));
+    const words = text.split(' ');
+    
+    return words.map((word, wordIndex) => {
+      return (
+        <span className="inline-block whitespace-nowrap" key={`word-${wordIndex}`}>
+          {word.split('').map((char, charIndex) => (
+            <span className="inline-block word" key={`char-${wordIndex}-${charIndex}`}>
+              {char}
+            </span>
+          ))}
+          {wordIndex !== words.length - 1 && <span className="inline-block">&nbsp;</span>}
+        </span>
+      );
+    });
   }, [children]);
 
   useEffect(() => {
