@@ -120,11 +120,7 @@ export default function SensoresSection() {
 
           {/* Renderizado del Mapa */}
           <div className="h-[400px] w-full">
-            <MapaBaliza 
-              lat={BALIZA_DEMO.lat} 
-              lng={BALIZA_DEMO.lng} 
-              // Ya no pasamos onMove porque el mapa es estático
-            />
+            <MapaBaliza />
           </div>
 
           {/* Pie del mapa */}
