@@ -1,6 +1,6 @@
 // src/components/sections/SensoresSection.tsx
 import dynamic from 'next/dynamic'
-import { Wind, Flame, Beaker, MapPin } from 'lucide-react'
+import { Wind, Flame, Beaker, MapPin, ShieldAlert, Activity } from 'lucide-react'
 import { BALIZA_DEMO } from '@/lib/constants'
 import { BentoCard, CANOPEA_GLOW, CANOPEA_GLOW_CYAN } from '@/components/BentoCard'
 
@@ -122,6 +122,35 @@ export default function SensoresSection() {
               </BentoCard>
             )
           })}
+        </div>
+
+        {/* Context Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <BentoCard className="bg-surface border border-lime/25 rounded-2xl p-6 md:p-8" glowColor={CANOPEA_GLOW} enableTilt clickEffect particleCount={5}>
+            <h3 className="text-[#F1F7F6] text-xl font-display font-bold mb-3 flex items-center gap-2">
+              <ShieldAlert className="w-5 h-5 text-lime" />
+              Seguridad y Umbrales (ppm)
+            </h3>
+            <p className="text-text2 text-sm leading-relaxed mb-4">
+              La medida en <strong>Partes por Millón (ppm)</strong> cuantifica la concentración métrica de un contaminante. Según normativas de seguridad e higiene, superar estos topes fisiológicos ocasiona intoxicaciones silenciosas (como la asfixia celular por CO), o advierte de la proximidad al Límite Inferior de Explosividad (LEL) en gases como el metano.
+            </p>
+            <p className="text-text3 text-xs leading-relaxed">
+              Los límites pre-configurados en el código de Canopea disparan alertas preventivas antes de que la saturación biológica en el aire represente una emergencia irreparable, permitiendo protocolos tempranos de ventilación.
+            </p>
+          </BentoCard>
+          
+          <BentoCard className="bg-surface border border-cyan/25 rounded-2xl p-6 md:p-8" glowColor={CANOPEA_GLOW} enableTilt clickEffect particleCount={5}>
+            <h3 className="text-[#F1F7F6] text-xl font-display font-bold mb-3 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-cyan" />
+              Importancia de monitorear red
+            </h3>
+            <p className="text-text2 text-sm leading-relaxed mb-4">
+              La degradación de la calidad del aire representa una amenaza mundial causante de deficiencias agudas del sistema respiratorio e impactos drásticos en la termodinámica del ecosistema mediante el efecto invernadero e isla de calor urbarno.
+            </p>
+            <p className="text-text3 text-xs leading-relaxed">
+              Implementar tecnología a través de redes descentralizadas como <strong>Canopea</strong> brinda la capacidad de observar focos de contaminación microscópicos e invisibles que las grandes agencias gubernamentales pasan por alto, protegiendo vecindarios e instituciones al democratizar sus propios datos.
+            </p>
+          </BentoCard>
         </div>
 
         {/* Map card — also wrapped in BentoCard */}

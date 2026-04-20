@@ -60,6 +60,30 @@ Canopea utiliza **Firebase** como el backend en tiempo real para recibir, proces
 
 ---
 
+## 🧮 Algoritmo AQI de Canopea
+
+El sistema incorpora un algoritmo propio para calcular el **Índice de Calidad del Aire (AQI)** general evaluando el impacto ecosistémico de tres sensores distintos en simultáneo.
+
+### ¿En qué se basa?
+El algoritmo compara la concentración en Partes por Millón (ppm) arrojada por cada sensor iterativamente frente a su **Límite de Exposición Seguro (Umbral Máximo)** predefinido:
+- **MQ-2 (Gases combustibles):** Límite 1000 ppm
+- **MQ-7 (Monóxido de Carbono):** Límite 200 ppm
+- **MQ-135 (VOC / Amoníaco):** Límite 150 ppm
+
+### Funcionamiento:
+1. **Normalización Relativa:** Cada lectura en crudo fluye a través de una función de peso que calcula qué porcentaje del límite máximo de peligro representa ese valor (*Impacto Relativo* `(ppm_actual / umbral) * 100`).
+2. **Aislamiento del Factor Crítico:** El algoritmo itera las tres métricas y aísla como *"Contaminante Principal"* exclusivamente al gas que alcance el **mayor porcentaje** relativo. 
+3. **Escalonamiento Semántico:** Finalmente, el porcentaje más alto se evalúa y clasifica a través de las escalas dictadas en `src/lib/aqi.ts` y reacciona entregándonos el rango exacto de riesgo y los consejos sanitarios:
+   - `0 - 50%` 🟢 BUENA (Riesgo Bajo)
+   - `51 - 100%` 🟡 ACEPTABLE (Riesgo Moderado)
+   - `101 - 150%` 🟠 MALA (Riesgo Alto)
+   - `151 - 200%` 🔴 MUY MALA (Riesgo Muy Alto)
+   - `> 200%` 🟣 EXTREMADAMENTE MALA (Riesgo Extremadamente Alto)
+
+*Nota: La clasificación semántica y de colores se encuentra alineada con el **Índice Aire y Salud** oficial del Gobierno de la CDMX (NOM-172-SEMARNAT-2019).*
+
+---
+
 ## ⚙️ Código del Microcontrolador (ESP32)
 
 El ESP32 actúa como el componente encargado del sensado. Este esquinero en código C++ lee periódicamente las variaciones analógicas de voltaje de los sensores (MQ-2, MQ-7 y MQ-135) y transmite la carga útil (payload JSOn) por medio de WiFi al backend.

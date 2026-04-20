@@ -266,6 +266,14 @@ export const fuentes: Fuente[] = [
     aporte: 'Explicación teórica de la Ley de Ohm, principio eléctrico que permite convertir los cambios de resistencia del sensor MQ en un voltaje analógico escalable por el ADC del ESP32.',
     conceptos: ['Ley de Ohm', 'División de tensión', 'Corriente', 'Resistencia'],
   },
+  {
+    icon: '',
+    color: '#00DF81',
+    titulo: 'Índice AIRE y SALUD (NOM-172) — SEDEMA CDMX',
+    url: 'https://www.aire.cdmx.gob.mx/default.php?opc=%27ZaBhnmI=&dc=%27aQ',
+    aporte: 'Normativa mexicana oficial (NOM-172-SEMARNAT-2019) estandarizada. Utilizada por el algoritmo principal de Canopea para determinar matemáticamente el riesgo sanitario, los contornos de clasificación semántica (EJ. Buena, Aceptable, Mala) y las recomendaciones oficiales de salud pública emitidas al usuario.',
+    conceptos: ['Norma Oficial Mexicana', 'Estandarización AQI', 'Salud Pública', 'Alertas de Riesgo'],
+  },
 ]
 
 export const recursos: string[] = [

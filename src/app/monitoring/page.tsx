@@ -20,6 +20,13 @@ function tiempoRelativo(ts: any): string {
   return d.toLocaleTimeString('es-MX')
 }
 
+function getPollutantInfo(name: string) {
+  if (name.includes('VOC')) return "Los Compuestos Orgánicos Volátiles (VOC) y el Amoníaco son toxinas procedentes de fertilizantes, desechos de biomasa y productos químicos que afectan directamente la calidad ambiental."
+  if (name.includes('Monóxido')) return "El Monóxido de Carbono (CO) es un gas tóxico altamente peligroso asociado a la combustión incompleta de vehículos a motor e industria pesada."
+  if (name.includes('GLP')) return "Presencia de gases combustibles y humo. Su alza puede indicar fugas de gas licuado o actividad de fuego cercana."
+  return ""
+}
+
 export default function MonitoringPage() {
   const { lecturas, conectado, modoDemo, cargando, exportCSV } = useMonitoreo(BALIZA_DEMO.id)
   const ultima = lecturas[0]
@@ -117,7 +124,7 @@ export default function MonitoringPage() {
                       <span className="text-sm font-bold tracking-widest text-[#030D09] uppercase">Índice General • Canopea</span>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 mb-4">
                       <div>
                         <div className="text-[10px] font-mono tracking-widest text-[#030D09]/70 uppercase mb-1">Principal Contaminante</div>
                         <h2 className="text-3xl sm:text-4xl font-display font-bold text-[#030D09]">{aqi.primaryPollutant}</h2>
@@ -129,6 +136,15 @@ export default function MonitoringPage() {
                           {aqi.score.toFixed(1)}%
                         </div>
                       </div>
+                    </div>
+
+                    <div className="border-l-2 border-[#030D09]/20 pl-4 py-1 mb-8 max-w-xl">
+                      <p className="text-xs text-[#030D09]/80 leading-relaxed font-medium mb-1">
+                        Determinación del contaminante: El algoritmo de Canopea aisla la principal amenaza ambiental del entorno y clasifica el riesgo final basándose en la normativa mexicana NOM-172-SEMARNAT-2019 (Índice AIRE y SALUD CDMX).
+                      </p>
+                      <p className="text-[11px] text-[#030D09]/70 italic leading-relaxed">
+                        Tipo de riesgo: {getPollutantInfo(aqi.primaryPollutant)}
+                      </p>
                     </div>
 
                     <div className="bg-[#030D09]/10 rounded-xl p-4 border border-[#030D09]/10">
@@ -175,7 +191,7 @@ export default function MonitoringPage() {
                   {/* Recommendations */}
                   <div className="bg-[#032221] border border-[#095544] rounded-2xl p-5 flex-1">
                     <h3 className="text-[#AAC8C4] text-[10px] font-mono uppercase tracking-widest mb-4 flex items-center gap-2">
-                      {aqi.level === 'EXCELENTE' || aqi.level === 'BUENO' ? <Heart className="w-3 h-3" /> : <ShieldAlert className="w-3 h-3 text-[#E63946]"/>}
+                      {aqi.level === 'BUENA' || aqi.level === 'ACEPTABLE' ? <Heart className="w-3 h-3" /> : <ShieldAlert className="w-3 h-3 text-[#E63946]"/>}
                       Consejos de cuidado
                     </h3>
                     <ul className="space-y-3">
@@ -219,6 +235,64 @@ export default function MonitoringPage() {
                 </div>
                 <LecturasTable lecturas={lecturas} balizaNombre={BALIZA_DEMO.nombre} />
               </div>
+
+              {/* ── Documentación Técnica y Ambiental ── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                {/* Algoritmo y Escalas */}
+                <div className="bg-[#032221] border border-[#095544] rounded-2xl p-6 sm:p-8">
+                  <h3 className="text-[#F1F7F6] text-lg font-display font-bold mb-4 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-[#00DF81]" />
+                    Algoritmo y Escalas (NOM-172)
+                  </h3>
+                  <div className="space-y-4 text-sm text-[#AAC8C4] leading-relaxed">
+                    <p>
+                      El algoritmo compara iterativamente la concentración detectada (ppm) de cada sensor frente a su
+                      Límite de Exposición Seguro (Umbral Máximo). El gas con el mayor porcentaje relativo
+                      (impacto) se convierte automáticamente en el <strong>Contaminante Principal</strong>.
+                    </p>
+                    <div className="bg-[#030D09] rounded-xl p-4 border border-[#095544]/50">
+                      <ul className="space-y-2 text-xs font-mono">
+                        <li className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#00DF81]" /> 0 - 50% : BUENA (Riesgo Bajo)</li>
+                        <li className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#F9CB42]" /> 51 - 100% : ACEPTABLE (Riesgo Moderado)</li>
+                        <li className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#FF8C00]" /> 101 - 150% : MALA (Riesgo Alto)</li>
+                        <li className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#E63946]" /> 151 - 200% : MUY MALA (Riesgo Muy Alto)</li>
+                        <li className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#8B008B]" /> &gt; 200% : EXTREMADAMENTE MALA (Riesgo Ext. Alto)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Resumen Contaminación */}
+                <div className="bg-[#032221] border border-[#095544] rounded-2xl p-6 sm:p-8 h-80 overflow-y-auto">
+                  <h3 className="text-[#F1F7F6] text-lg font-display font-bold mb-4 flex items-center gap-2">
+                    <Wind className="w-5 h-5 text-[#00DF81]" />
+                    Contaminación Ambiental
+                  </h3>
+                  <div className="space-y-5 text-sm text-[#AAC8C4] leading-relaxed">
+                    <div>
+                      <h4 className="text-[#F1F7F6] font-semibold mb-1">¿Qué es la contaminación?</h4>
+                      <p>Se entiende como la introducción de sustancias, organismos o formas de energía en ambientes donde no pertenecen, o en cantidades superiores a las propias de dichos sustratos, por tiempo suficiente para interferir con la salud, la comodidad de las personas, dañar recursos naturales o alterar el equilibrio ecológico.</p>
+                    </div>
+                    <div>
+                      <h4 className="text-[#F1F7F6] font-semibold mb-1">Origen y causas principales</h4>
+                      <p>Los efectos más graves ocurren cuando la entrada de sustancias al ambiente rebasa la capacidad de los ecosistemas para asimilarlas o degradarlas. Las principales causas son actividades humanas como la industria, agricultura, explotación de energéticos fósiles y actividades domésticas que agravaron la huella tras la Segunda Guerra Mundial.</p>
+                    </div>
+                    <div>
+                      <h4 className="text-[#F1F7F6] font-semibold mb-1">Efectos en la salud humana</h4>
+                      <p>Una sustancia se considera tóxica si causa daño funcional o anatómico en los organismos expuestos. La contaminación física y de micro-partículas puede ocasionar muertes, mutaciones, cáncer, alteraciones neurológicas y sensitivas.</p>
+                    </div>
+                    <div>
+                      <h4 className="text-[#F1F7F6] font-semibold mb-1">Efectos Agrarios y Transfronterizos</h4>
+                      <p>La alteración biogeoquímica ocasiona lluvia ácida, disipación de la capa de ozono y daño a macro-ecosistemas completos originando efectos transfronterizos invisibles a corto plazo.</p>
+                    </div>
+                    <div>
+                      <h4 className="text-[#F1F7F6] font-semibold mb-1">Prevención y Control</h4>
+                      <p>La contaminación biológica cede al saneamiento y recolección controlada. Sin embargo, los contaminantes químicos sintéticos no disponen de mecanismos naturales de eliminación. Su erradicación recae en políticas como el Protocolo de Montreal, la monitorización continua y educación, pilar fundacional de la red experimental <strong>Canopea</strong>.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </>
           )}
         </div>

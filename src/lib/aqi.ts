@@ -1,7 +1,7 @@
 // src/lib/aqi.ts
 import { UMBRALES } from './constants'
 
-export type AQILevel = 'EXCELENTE' | 'BUENO' | 'MODERADO' | 'MALO' | 'PELIGROSO'
+export type AQILevel = 'BUENA' | 'ACEPTABLE' | 'MALA' | 'MUY MALA' | 'EXTREMADAMENTE MALA'
 
 export interface AQIStatus {
   level: AQILevel
@@ -14,11 +14,11 @@ export interface AQIStatus {
 }
 
 const AQI_RANGES = [
-  { max: 20, level: 'EXCELENTE' as AQILevel, color: '#00DF81', bgLight: 'rgba(0,223,129,0.08)', healthMsg: 'La calidad del aire es estelar. Condiciones ideales.', tips: ['Ideal para actividades físicas al aire libre', 'Abre ventanas para ventilar interiores', 'Ningún riesgo para la salud'] },
-  { max: 50, level: 'BUENO' as AQILevel,     color: '#2CC295', bgLight: 'rgba(44,194,149,0.08)', healthMsg: 'La calidad del aire es aceptable. Seguro para todos.', tips: ['Seguro para actividades en exteriores', 'Personas inusualmente sensibles deben considerar precauciones mínimas'] },
-  { max: 80, level: 'MODERADO' as AQILevel,  color: '#F9CB42', bgLight: 'rgba(249,203,66,0.08)',  healthMsg: 'Contaminación detectable. Grupos sensibles en riesgo sutil.', tips: ['Grupos sensibles (asmáticos, niños, ancianos) deben limitar esfuerzo prolongado', 'Considera reducir el tiempo de ejercicio exterior', 'Monitorea síntomas respiratorios si eres vulnerable'] },
-  { max: 100, level: 'MALO' as AQILevel,     color: '#FF6B35', bgLight: 'rgba(255,107,53,0.08)',  healthMsg: 'El aire es insalubre. Riesgo de afecciones respiratorias.', tips: ['Público en general debe reducir actividades intensas al aire libre', 'Grupos sensibles DEBEN usar mascarilla o permanecer en interiores', 'Cierra ventanas si el origen es humo/exterior'] },
-  { max: Infinity, level: 'PELIGROSO' as AQILevel, color: '#E63946', bgLight: 'rgba(230,57,70,0.08)', healthMsg: 'Emergencia de salud pública por contaminación severa.', tips: ['PERMANECE EN INTERIORES con ventanas cerradas', 'Evita absolutamente todo esfuerzo exterior', 'Usa purificadores de aire si es posible', 'Utiliza mascarilla N95 respiratoria obligatoria en exterior'] },
+  { max: 50, level: 'BUENA' as AQILevel, color: '#00DF81', bgLight: 'rgba(0,223,129,0.08)', healthMsg: 'Riesgo Bajo. La calidad del aire es idónea.', tips: ['Ideal para actividades físicas al aire libre.', 'Puede realizarse cualquier actividad al aire libre.'] },
+  { max: 100, level: 'ACEPTABLE' as AQILevel,     color: '#F9CB42', bgLight: 'rgba(249,203,66,0.08)', healthMsg: 'Riesgo Moderado. Calidad de aire aceptable.', tips: ['Grupos sensibles deben considerar reducir las actividades físicas vigorosas.', 'El resto de la población puede disfrutar de actividades al aire libre.'] },
+  { max: 150, level: 'MALA' as AQILevel,  color: '#FF8C00', bgLight: 'rgba(255,140,0,0.08)',  healthMsg: 'Riesgo Alto. Posibles efectos en la salud para grupos sensibles.', tips: ['Grupos sensibles (asmáticos, niños, ancianos) deben evitar las actividades físicas al aire libre.', 'La población general debe reducir las actividades físicas vigorosas al aire libre.'] },
+  { max: 200, level: 'MUY MALA' as AQILevel,     color: '#E63946', bgLight: 'rgba(230,57,70,0.08)',  healthMsg: 'Riesgo Muy Alto. Incremento de afecciones respiratorias.', tips: ['Toda la población debe evitar realizar actividades físicas al aire libre.', 'Grupos sensibles DEBEN usar mascarilla o permanecer en interiores.'] },
+  { max: Infinity, level: 'EXTREMADAMENTE MALA' as AQILevel, color: '#8B008B', bgLight: 'rgba(139,0,139,0.08)', healthMsg: 'Riesgo Extremadamente Alto. Emergencia de salud pública.', tips: ['PERMANECE EN INTERIORES con ventanas cerradas.', 'Usa purificadores de aire en el interior.', 'Uso obligatorio de mascarilla respiratoria si debes salir.'] },
 ]
 
 export function calculateAQI(mq2: number, mq7: number, mq135: number): AQIStatus {
