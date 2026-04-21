@@ -11,8 +11,6 @@ function toNum(val: unknown, fallback = 0): number {
 }
 
 // ─── Normaliza un documento crudo de Firestore a SensorReading ───────────────
-// Acepta los nombres reales que envía el ESP32: mq6_ppm, mq145_ppm,
-// además de los canónicos mq7_ppm y mq135_ppm.
 function normalizar(raw: Record<string, unknown>, id: string): SensorReading {
   return {
     id,
@@ -22,7 +20,7 @@ function normalizar(raw: Record<string, unknown>, id: string): SensorReading {
     mq7_ppm:    toNum(raw.mq7_ppm   ?? raw.mq6_ppm),
     // mq135 acepta tanto mq135_ppm como mq145_ppm (nombre del ESP32 real)
     mq135_ppm:  toNum(raw.mq135_ppm ?? raw.mq145_ppm),
-    fuente:     (raw.fuente as string) ?? 'esp32',
+    fuente: (raw.fuente as SensorReading['fuente']) ?? 'esp32',
   }
 }
 
