@@ -115,14 +115,3 @@ export const BALIZA_DEMO: Baliza = {
   firmware: 'v1.0.0',
 }
 
-export function generarLecturaDemo(offsetSeg = 0) {
-  const t = new Date(Date.now() - offsetSeg * 1000)
-  return {
-    id: `demo-${t.getTime()}`,
-    timestamp: t,
-    mq2_ppm: Math.max(0, 120 + (Math.random() - 0.5) * 500),
-    mq7_ppm: Math.max(0, 28 + (Math.random() - 0.5) * 80),
-    mq135_ppm: Math.max(0, 45 + (Math.random() - 0.5) * 60),
-    fuente: 'demo' as const,
-  }
-}

@@ -1,123 +1,64 @@
 // src/app/credits/page.tsx
 'use client'
-import { useState } from 'react'
 import Image from 'next/image'
-import { Github, Linkedin, ExternalLink, ChevronDown, ChevronUp, Cpu, Radio, Server, Wifi, Zap, FlaskConical } from 'lucide-react'
+import { Github, Linkedin, ExternalLink } from 'lucide-react'
 import PageHeroBanner from '@/components/layout/PageHeroBanner'
-import { AUTORES, COMPONENTES } from '@/lib/constants'
-import type { ComponenteProyecto } from '@/types'
-
-const categoryIcons: Record<ComponenteProyecto['categoria'], React.ElementType> = {
-  hardware: Cpu,
-  sensor: FlaskConical,
-  software: Server,
-  comunicacion: Wifi,
-}
-
-const categoryColors: Record<ComponenteProyecto['categoria'], { text: string; border: string; bg: string }> = {
-  hardware: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
-  sensor: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
-  software: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
-  comunicacion: { text: 'text-[#00DF81]', border: 'border-[#00DF81]/20', bg: 'bg-[#00DF81]/5' },
-}
-
-function ComponenteCard({ comp }: { comp: ComponenteProyecto }) {
-  const [expanded, setExpanded] = useState(false)
-  const Icon = categoryIcons[comp.categoria]
-  const color = categoryColors[comp.categoria]
-
-  return (
-    <article className={`bg-[#032221] border ${color.border} rounded-2xl overflow-hidden hover:border-[#00DF81]/40 transition-all duration-300`}>
-      {/* Image placeholder */}
-      <div className={`h-40 ${color.bg} border-b border-[#095544] flex items-center justify-center relative`}>
-        {comp.imagen ? (
-          <Image src={comp.imagen} alt={comp.titulo} fill className="object-cover" loading="lazy" />
-        ) : (
-          <div className="flex flex-col items-center gap-2 opacity-60">
-            <Icon className={`w-12 h-12 ${color.text}`} />
-            <span className="text-xs font-mono text-[#AAC8C4]">Sin imagen</span>
-          </div>
-        )}
-        {/* Category badge */}
-        <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full border ${color.border} ${color.bg} ${color.text} uppercase tracking-wider`}>
-          {comp.categoria}
-        </span>
-      </div>
-
-      <div className="p-5">
-        <div className="flex items-start gap-3 mb-2">
-          <div className={`w-8 h-8 rounded-lg ${color.bg} border ${color.border} flex items-center justify-center flex-shrink-0`}>
-            <Icon className={`w-4 h-4 ${color.text}`} />
-          </div>
-          <div>
-            <h3 className="font-display font-semibold text-base text-[#F1F7F6]">{comp.titulo}</h3>
-            <p className="text-[#AAC8C4] text-xs mt-0.5">{comp.descripcion}</p>
-          </div>
-        </div>
-
-        {/* Expandable details */}
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-full mt-3 pt-3 border-t border-[#095544] flex items-center justify-between text-xs text-[#AAC8C4] hover:text-[#00DF81] transition-colors"
-        >
-          <span>{expanded ? 'Ocultar detalles' : 'Ver detalles técnicos'}</span>
-          {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-        </button>
-
-        {expanded && (
-          <ul className="mt-3 space-y-1.5">
-            {comp.detalles.map((d, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-[#F1F7F6]">
-                <span className={`w-1 h-1 rounded-full ${color.text} mt-1.5 flex-shrink-0`} />
-                {d}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </article>
-  )
-}
+import { AUTORES } from '@/lib/constants'
 
 export default function CreditsPage() {
-  const [activeCategory, setActiveCategory] = useState<ComponenteProyecto['categoria'] | 'todos'>('todos')
-
-  const categorias: Array<{ id: ComponenteProyecto['categoria'] | 'todos'; label: string }> = [
-    { id: 'todos', label: 'Todos' },
-    { id: 'hardware', label: 'Hardware' },
-    { id: 'sensor', label: 'Sensores' },
-    { id: 'software', label: 'Software' },
-    { id: 'comunicacion', label: 'Comunicación' },
-  ]
-
-  const filtered = activeCategory === 'todos'
-    ? COMPONENTES
-    : COMPONENTES.filter(c => c.categoria === activeCategory)
-
   return (
     <main className="min-h-screen bg-[#030D09]">
 
       {/* ── FaultyTerminal Hero Banner ── */}
       <PageHeroBanner
-        tag="CANOPEA :: EQUIPO · COMPONENTES · TECNOLOGÍA"
+        tag="CANOPEA :: EQUIPO · INSTITUCIÓN"
         title="Créditos del proyecto"
-        subtitle="Equipo de investigación, componentes técnicos y tecnologías utilizadas en el sistema de balizas meteorológicas Canopea."
+        subtitle="Conoce al equipo de investigación y la institución detrás del desarrollo de Canopea."
       />
 
+      {/* ── Institution Section ── */}
+      <section className="py-20 bg-bg-dark border-b border-[#095544]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+          {/* School Logo Placeholder */}
+          <div className="mx-auto w-32 h-32 md:w-40 md:h-40 rounded-full border border-[#00DF81] bg-[#032221] flex items-center justify-center p-2 mb-6 overflow-hidden relative">
+            {
+              <Image src="/logoprepa2oct.jpg" alt="Logo Preparatoria 2 de Octubre de 1968" fill className="object-contain" />
+            }
+          </div>
+
+          <h2 className="text-3xl font-display font-bold text-[#F1F7F6] mb-3">
+            Preparatoria 2 de Octubre de 1968
+          </h2>
+          <p className="text-sm font-mono tracking-widest text-[#00DF81] mb-6 uppercase">
+            Benemérita Universidad Autónoma de Puebla
+          </p>
+
+          <div className="prose prose-invert max-w-none text-sm text-[#AAC8C4] leading-relaxed bg-[#032221] border border-[#095544] p-6 rounded-2xl">
+            <p>
+              Este proyecto fue desarrollado bajo el marco del <strong>XXXV Concurso Estatal de Aparatos y Experimentos de Física</strong>, área de Aparatos de Uso Didáctico y Tecnológico. Categoría nivel medio superior. Edición dedicada a la divulgadora científica <strong>Julieta Norma Fierro Gossman</strong>.
+            </p>
+            <p className="mt-4">
+              El desarrollo de <strong className="text-[#00DF81]">Canopea</strong> representa un esfuerzo por llevar conceptos avanzados de termodinámica, electromagnetismo y cinemática de gases aplicados a la electrónica moderna y el Internet de las Cosas (IoT), para demostrar cómo la ciencia escolar puede resolver problemáticas medioambientales locales mediante la democratización de los datos.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── Authors ── */}
-      <section className="py-24 bg-bg-mid border-b border-border-green">
+      <section className="py-24 bg-bg-mid">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-xs font-mono tracking-widest text-[#00DF81] uppercase">Equipo</span>
-            <h1 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4" style={{ color: '#F1F7F6' }}>
+            <span className="text-xs font-mono tracking-widest text-[#00DF81] uppercase">Equipo de Investigación</span>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4" style={{ color: '#F1F7F6' }}>
               Autores del <span style={{ color: '#00DF81' }}>proyecto</span>
-            </h1>
+            </h2>
             <div className="section-sep mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {AUTORES.map((autor, i) => (
-              <article key={i} className="bg-surface border border-border-green rounded-2xl overflow-hidden hover:border-lime/20 transition-colors">
+              <article key={i} className="bg-[#030D09] border border-[#095544] rounded-2xl overflow-hidden hover:border-[#00DF81]/40 transition-colors">
                 {/* Photo area */}
                 <div className="relative h-56 bg-gradient-to-br from-[#030D09] to-[#0B453A] flex items-center justify-center border-b border-[#095544]">
                   {autor.foto ? (
@@ -132,7 +73,7 @@ export default function CreditsPage() {
                   ) : (
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-24 h-24 rounded-full bg-[#032221] border-2 border-[#095544] flex items-center justify-center text-4xl font-bold text-[#00DF81]">
-                        {autor.nombre.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        {autor.nombre.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                       </div>
                       <span className="text-xs text-[#707D7D] font-mono">Foto no disponible</span>
                     </div>
@@ -145,9 +86,9 @@ export default function CreditsPage() {
                 </div>
 
                 <div className="p-6">
-                  <h2 className="text-xl font-display font-bold mb-1">{autor.nombre}</h2>
-                  <p className="text-text3 text-sm mb-4">{autor.escuela}</p>
-                  <p className="text-text2 text-sm leading-relaxed mb-5">{autor.bio}</p>
+                  <h3 className="text-xl font-display font-bold mb-1 text-[#F1F7F6]">{autor.nombre}</h3>
+                  <p className="text-[#707D7D] text-sm mb-4">{autor.escuela}</p>
+                  <p className="text-[#AAC8C4] text-sm leading-relaxed mb-5">{autor.bio}</p>
                   <div className="flex items-center gap-3">
                     {autor.github && (
                       <a href={autor.github} target="_blank" rel="noopener noreferrer"
@@ -169,44 +110,6 @@ export default function CreditsPage() {
         </div>
       </section>
 
-      {/* ── Component blog ── */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-xs font-mono tracking-widest text-lime uppercase">Documentación</span>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold mt-3 mb-4">
-              Componentes del <span className="gradient-text">sistema</span>
-            </h2>
-            <div className="section-sep mx-auto mb-4" />
-            <p className="text-text2 text-sm max-w-lg mx-auto">
-              Descripción técnica de cada elemento que conforma la red de balizas Canopea.
-            </p>
-          </div>
-
-          {/* Filter tabs */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {categorias.map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => setActiveCategory(id)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeCategory === id
-                  ? 'bg-[#00DF81] text-[#030D09]'
-                  : 'bg-[#032221] border border-[#095544] text-[#AAC8C4] hover:text-[#00DF81] hover:border-[#00DF81]/30'
-                  }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Components grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map(comp => (
-              <ComponenteCard key={comp.id} comp={comp} />
-            ))}
-          </div>
-        </div>
-      </section>
     </main>
   )
 }

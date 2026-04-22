@@ -242,6 +242,14 @@ function hexToRgb(hex: string): [number, number, number] {
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
 }
 
+function getDeviceDpr(): number {
+  if (typeof window === 'undefined') return 1;
+  // Mobile devices: always use 1 to save GPU
+  const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window);
+  if (isMobile) return 1;
+  return Math.min(window.devicePixelRatio || 1, 2);
+}
+
 export default function FaultyTerminal({
   scale = 1,
   gridMul = [2, 1],
@@ -258,7 +266,7 @@ export default function FaultyTerminal({
   tint = '#ffffff',
   mouseReact = true,
   mouseStrength = 0.2,
-  dpr = Math.min(window.devicePixelRatio || 1, 2),
+  dpr,
   pageLoadAnimation = true,
   brightness = 1,
   className,
@@ -279,6 +287,15 @@ export default function FaultyTerminal({
 
   const ditherValue = useMemo(() => (typeof dither === 'boolean' ? (dither ? 1 : 0) : dither), [dither]);
 
+  // Compute effective DPR safely (SSR-safe)
+  const effectiveDpr = useMemo(() => dpr ?? getDeviceDpr(), [dpr]);
+
+  // Detect mobile for FPS throttling
+  const isMobileRef = useRef(false);
+  useEffect(() => {
+    isMobileRef.current = window.innerWidth <= 768 || ('ontouchstart' in window);
+  }, []);
+
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const ctn = containerRef.current;
     if (!ctn) return;
@@ -292,12 +309,19 @@ export default function FaultyTerminal({
     const ctn = containerRef.current;
     if (!ctn) return;
 
-    const renderer = new Renderer({ dpr });
+    // Check reduced motion preference
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    if (prefersReducedMotion) return;
+
+    const renderer = new Renderer({ dpr: effectiveDpr });
     rendererRef.current = renderer;
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 1);
 
     const geometry = new Triangle(gl);
+
+    // Disable mouse on mobile
+    const effectiveMouseReact = mouseReact && !isMobileRef.current;
 
     const program = new Program(gl, {
       vertex: vertexShader,
@@ -323,7 +347,7 @@ export default function FaultyTerminal({
           value: new Float32Array([smoothMouseRef.current.x, smoothMouseRef.current.y])
         },
         uMouseStrength: { value: mouseStrength },
-        uUseMouse: { value: mouseReact ? 1 : 0 },
+        uUseMouse: { value: effectiveMouseReact ? 1 : 0 },
         uPageLoadProgress: { value: pageLoadAnimation ? 0 : 1 },
         uUsePageLoadAnimation: { value: pageLoadAnimation ? 1 : 0 },
         uBrightness: { value: brightness }
@@ -347,8 +371,18 @@ export default function FaultyTerminal({
     resizeObserver.observe(ctn);
     resize();
 
+    // FPS throttling: 30fps on mobile, 60fps on desktop
+    const frameInterval = isMobileRef.current ? 1000 / 30 : 0;
+    let lastFrameTime = 0;
+
     const update = (t: number) => {
       rafRef.current = requestAnimationFrame(update);
+
+      // Throttle FPS on mobile
+      if (frameInterval > 0) {
+        if (t - lastFrameTime < frameInterval) return;
+        lastFrameTime = t;
+      }
 
       if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
         loadAnimationStartRef.current = t;
@@ -369,7 +403,7 @@ export default function FaultyTerminal({
         program.uniforms.uPageLoadProgress.value = progress;
       }
 
-      if (mouseReact) {
+      if (effectiveMouseReact) {
         const dampingFactor = 0.08;
         const smoothMouse = smoothMouseRef.current;
         const mouse = mouseRef.current;
@@ -386,19 +420,19 @@ export default function FaultyTerminal({
     rafRef.current = requestAnimationFrame(update);
     ctn.appendChild(gl.canvas);
 
-    if (mouseReact) ctn.addEventListener('mousemove', handleMouseMove);
+    if (effectiveMouseReact) ctn.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       resizeObserver.disconnect();
-      if (mouseReact) ctn.removeEventListener('mousemove', handleMouseMove);
+      if (effectiveMouseReact) ctn.removeEventListener('mousemove', handleMouseMove);
       if (gl.canvas.parentElement === ctn) ctn.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
       loadAnimationStartRef.current = 0;
       timeOffsetRef.current = Math.random() * 100;
     };
   }, [
-    dpr,
+    effectiveDpr,
     pause,
     timeScale,
     scale,

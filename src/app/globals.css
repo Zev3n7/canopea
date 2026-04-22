@@ -3,7 +3,6 @@
    Canopea 2.0 · Paleta tecnológica formal
    Base: Rich Black / Dark Green → Acento: Caribbean Green #00DF81
    ───────────────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -114,4 +113,21 @@ body {
   color: var(--text3);
 }
 
-/* shadcn injections cleaned — Canopea uses its own design tokens above */
+/* ── Reduced Motion ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .dot-pulse { animation: none; }
+  .animate-fade-up { animation: none; opacity: 1; }
+}
+
+/* ── Mobile performance hints ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dot-pulse {
+    animation-duration: 3s;
+  }
+}

@@ -1,8 +1,6 @@
-// src/hooks/useFirestore.ts
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import type { SensorReading } from '@/types'
-import { generarLecturaDemo } from '@/lib/constants'
 
 // ─── Utilidad: convierte cualquier valor a number seguro ─────────────────────
 function toNum(val: unknown, fallback = 0): number {
@@ -28,10 +26,8 @@ function normalizar(raw: Record<string, unknown>, id: string): SensorReading {
 export function useMonitoreo(balizaId: string) {
   const [lecturas, setLecturas]   = useState<SensorReading[]>([])
   const [conectado, setConectado] = useState(false)
-  const [modoDemo,  setModoDemo]  = useState(true)
   const [cargando,  setCargando]  = useState(true)
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const unsubRef    = useRef<(() => void) | null>(null)
 
   useEffect(() => {
@@ -49,7 +45,7 @@ export function useMonitoreo(balizaId: string) {
             const q = query(
               collection(fb.db, 'balizas', balizaId, 'lecturas'),
               orderBy('timestamp', 'desc'),
-              limit(50)
+              limit(100)
             )
 
             unsubRef.current = onSnapshot(
@@ -63,43 +59,29 @@ export function useMonitoreo(balizaId: string) {
                 )
                 setLecturas(data)
                 setConectado(true)
-                setModoDemo(false)
                 setCargando(false)
               },
               (_err) => {
-                // Si Firestore falla, caemos a demo
-                iniciarDemo()
+                // Error al conectar
+                setConectado(false)
+                setCargando(false)
               }
             )
             return
           }
         }
       } catch (_) {
-        // Credenciales no configuradas → demo
+        // Credenciales no configuradas
       }
 
-      iniciarDemo()
-    }
-
-    const iniciarDemo = () => {
-      const historial: SensorReading[] = Array.from({ length: 50 }, (_, i) =>
-        generarLecturaDemo(i * 10)
-      )
-      setLecturas(historial)
-      setModoDemo(true)
       setConectado(false)
       setCargando(false)
-
-      intervalRef.current = setInterval(() => {
-        setLecturas(prev => [generarLecturaDemo(0), ...prev.slice(0, 49)])
-      }, 4000)
     }
 
     iniciar()
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-      if (unsubRef.current)    unsubRef.current()
+      if (unsubRef.current) unsubRef.current()
     }
   }, [balizaId])
 
@@ -127,5 +109,5 @@ export function useMonitoreo(balizaId: string) {
     a.click()
   }
 
-  return { lecturas, conectado, modoDemo, cargando, exportCSV }
+  return { lecturas, conectado, cargando, exportCSV }
 }

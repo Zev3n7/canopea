@@ -9,6 +9,7 @@ interface SensorChartProps {
   color:    string
   label:    string
   umbral:   number
+  onClick?: () => void
 }
 
 function tsToDate(ts: SensorReading['timestamp']): Date {
@@ -23,7 +24,7 @@ function tsToDate(ts: SensorReading['timestamp']): Date {
   return new Date() // fallback final
 }
 
-export default function SensorChart({ lecturas, sensor, color, label, umbral }: SensorChartProps) {
+export default function SensorChart({ lecturas, sensor, color, label, umbral, onClick }: SensorChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const chartRef  = useRef<any>(null)
 
@@ -32,8 +33,9 @@ export default function SensorChart({ lecturas, sensor, color, label, umbral }: 
     import('chart.js').then(({ Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip }) => {
       Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip)
       const ctx = canvasRef.current
-      if (!ctx) return
+      if (!ctx || !lecturas.length) return
 
+      // En la vista miniaturizada mostramos solo las ultimas 30 lecturas
       const data    = [...lecturas].reverse().slice(-30)
       const labels  = data.map(l => tsToDate(l.timestamp).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
       const values  = data.map(l => +(l[sensor] ?? 0).toFixed(1))
@@ -73,6 +75,7 @@ export default function SensorChart({ lecturas, sensor, color, label, umbral }: 
               titleColor:      '#D9EDE3',
               bodyColor:       '#8BAF98',
               padding:         10,
+              displayColors:   false,
             },
           },
           scales: {
@@ -81,15 +84,28 @@ export default function SensorChart({ lecturas, sensor, color, label, umbral }: 
               grid:   { color: 'rgba(30,53,32,.5)' },
               ticks:  { color: '#4A6655', font: { size: 10, family: 'JetBrains Mono' } },
               border: { display: false },
+              suggestedMax: umbral,
             },
           },
         },
       })
     })
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy()
+        chartRef.current = null
+      }
+    }
   }, [lecturas, sensor, color, label, umbral])
 
   return (
-    <div className="bg-surface border border-border-green rounded-2xl p-5">
+    <div 
+      onClick={onClick}
+      className={`bg-surface border border-border-green rounded-2xl p-5 transition-all ${
+        onClick ? 'cursor-pointer hover:border-[#00DF81]/50 hover:shadow-[0_0_15px_rgba(0,223,129,0.1)] hover:-translate-y-1' : ''
+      }`}
+    >
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-mono tracking-wider text-text3 uppercase">{label}</span>
         <span className="text-xs font-mono" style={{ color }}>{lecturas[0] ? (lecturas[0][sensor] as number).toFixed(0) : '—'} ppm</span>
@@ -97,6 +113,11 @@ export default function SensorChart({ lecturas, sensor, color, label, umbral }: 
       <div className="relative h-36">
         <canvas ref={canvasRef} />
       </div>
+      {onClick && (
+        <div className="mt-4 text-center border-t border-[#095544] pt-2">
+          <span className="text-[10px] font-mono text-[#00DF81] opacity-70 uppercase tracking-widest">Click para expandir análisis</span>
+        </div>
+      )}
     </div>
   )
 }

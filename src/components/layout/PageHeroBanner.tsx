@@ -1,6 +1,7 @@
 // src/components/layout/PageHeroBanner.tsx
-// Reutilizable: banner hero con FaultyTerminal de fondo + TextType + ScrollFloat
+// Reutilizable: banner hero con FaultyTerminal de fondo (desktop) o CSS fallback (mobile)
 'use client'
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
 const FaultyTerminal = dynamic(() => import('@/components/FaultyTerminal'), { ssr: false })
@@ -18,30 +19,49 @@ interface PageHeroBannerProps {
 }
 
 export default function PageHeroBanner({ tag, title, subtitle, className = '' }: PageHeroBannerProps) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768 || ('ontouchstart' in window))
+  }, [])
+
   return (
     <section
       className={`relative overflow-hidden bg-bg-dark border-b border-border-green ${className}`}
       style={{ minHeight: 280 }}
     >
-      {/* FaultyTerminal background */}
-      <div className="absolute inset-0 z-0">
-        <FaultyTerminal
-          scale={1.2}
-          gridMul={[3, 1]}
-          digitSize={1.0}
-          timeScale={0.35}
-          scanlineIntensity={0.4}
-          glitchAmount={0.8}
-          flickerAmount={0.8}
-          noiseAmp={0.9}
-          curvature={0.05}
-          tint="#00DF81"
-          mouseReact
-          mouseStrength={0.3}
-          brightness={0.4}
-          className="w-full h-full"
+      {/* Background: WebGL on desktop, CSS gradient on mobile */}
+      {isMobile ? (
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            background: `
+              radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,223,129,0.08) 0%, transparent 70%),
+              repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,223,129,0.015) 3px, rgba(0,223,129,0.015) 4px),
+              linear-gradient(180deg, #030D09 0%, #032221 100%)
+            `,
+          }}
         />
-      </div>
+      ) : (
+        <div className="absolute inset-0 z-0">
+          <FaultyTerminal
+            scale={1.2}
+            gridMul={[3, 1]}
+            digitSize={1.0}
+            timeScale={0.35}
+            scanlineIntensity={0.4}
+            glitchAmount={0.8}
+            flickerAmount={0.8}
+            noiseAmp={0.9}
+            curvature={0.05}
+            tint="#00DF81"
+            mouseReact
+            mouseStrength={0.3}
+            brightness={0.4}
+            className="w-full h-full"
+          />
+        </div>
+      )}
 
       {/* Overlay */}
       <div

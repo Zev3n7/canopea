@@ -1,11 +1,13 @@
 // src/app/monitoring/page.tsx
 'use client'
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Activity, Download, Wifi, WifiOff, RefreshCw, AlertTriangle, Wind, Heart, ShieldAlert } from 'lucide-react'
 import PageHeroBanner from '@/components/layout/PageHeroBanner'
 import { useMonitoreo } from '@/hooks/useFirestore'
 import { BALIZA_DEMO } from '@/lib/constants'
 import { calculateAQI, getPollutantsRank } from '@/lib/aqi'
+import SensorModal from '@/components/ui/SensorModal'
 
 // Mantenemos componentes de graficos dinámicos
 const SensorChart   = dynamic(() => import('@/components/ui/SensorChart'),   { ssr: false })
@@ -27,9 +29,12 @@ function getPollutantInfo(name: string) {
   return ""
 }
 
+type ActiveSensor = { key: 'mq2_ppm' | 'mq7_ppm' | 'mq135_ppm', color: string, label: string, umbral: number } | null
+
 export default function MonitoringPage() {
-  const { lecturas, conectado, modoDemo, cargando, exportCSV } = useMonitoreo(BALIZA_DEMO.id)
+  const { lecturas, conectado, cargando, exportCSV } = useMonitoreo(BALIZA_DEMO.id)
   const ultima = lecturas[0]
+  const [sensorActivo, setSensorActivo] = useState<ActiveSensor>(null)
 
   const aqi = ultima ? calculateAQI(ultima.mq2_ppm, ultima.mq7_ppm, ultima.mq135_ppm) : null
   const rank = ultima ? getPollutantsRank(ultima.mq2_ppm, ultima.mq7_ppm, ultima.mq135_ppm) : []
@@ -51,12 +56,12 @@ export default function MonitoringPage() {
               <div className="flex items-center gap-3">
                 {/* Connection */}
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded border text-xs font-mono tracking-widest ${
-                  modoDemo
+                  !conectado
                     ? 'border-[#F9CB42]/30 bg-[#F9CB42]/10 text-[#F9CB42]'
                     : 'border-[#00DF81]/30 bg-[#00DF81]/10 text-[#00DF81]'
                 }`}>
-                  {modoDemo ? <WifiOff className="w-3.5 h-3.5" /> : <Wifi className="w-3.5 h-3.5" />}
-                  {modoDemo ? 'MODO DEMO' : 'LIVE'}
+                  {!conectado ? <WifiOff className="w-3.5 h-3.5" /> : <Wifi className="w-3.5 h-3.5" />}
+                  {!conectado ? 'DESCONECTADO' : 'LIVE'}
                 </div>
                 {ultima && (
                   <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#AAC8C4] font-mono tracking-widest">
@@ -77,19 +82,6 @@ export default function MonitoringPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-
-          {/* Demo banner */}
-          {modoDemo && (
-            <div className="rounded-xl border border-[#F9CB42]/30 bg-[#F9CB42]/5 p-4 flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-[#F9CB42] shrink-0 mt-0.5" />
-              <div>
-                <p className="text-[#F9CB42] text-sm font-semibold mb-1">Modo demo activo (Datos Simulados)</p>
-                <p className="text-[#F9CB42]/80 text-xs leading-relaxed">
-                  Para obtener datos reales, configura las variables de entorno de Firebase en <code className="font-mono bg-[#030D09] px-1 py-0.5 rounded text-[#F9CB42] border border-[#F9CB42]/20">.env.local</code> y reinicia el servidor.
-                </p>
-              </div>
-            </div>
-          )}
 
           {/* Content States */}
           {cargando ? (
@@ -216,16 +208,29 @@ export default function MonitoringPage() {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="bg-[#032221] rounded-xl border border-[#095544] p-3">
-                    <SensorChart lecturas={lecturas} sensor="mq2_ppm"   color="#00DF81" label="GLP / Metano / Humo (MQ-2)" umbral={1000} />
+                    <SensorChart lecturas={lecturas} sensor="mq2_ppm"   color="#00DF81" label="GLP / Metano / Humo (MQ-2)" umbral={1000} onClick={() => setSensorActivo({ key: 'mq2_ppm', color: '#00DF81', label: 'GLP / Metano / Humo (MQ-2)', umbral: 1000 })} />
                   </div>
                   <div className="bg-[#032221] rounded-xl border border-[#095544] p-3">
-                    <SensorChart lecturas={lecturas} sensor="mq7_ppm"   color="#2CC295" label="Monóxido de Carbono (MQ-7)" umbral={200}  />
+                    <SensorChart lecturas={lecturas} sensor="mq7_ppm"   color="#2CC295" label="Monóxido de Carbono (MQ-7)" umbral={200} onClick={() => setSensorActivo({ key: 'mq7_ppm', color: '#2CC295', label: 'Monóxido de Carbono (MQ-7)', umbral: 200 })} />
                   </div>
                   <div className="bg-[#032221] rounded-xl border border-[#095544] p-3">
-                    <SensorChart lecturas={lecturas} sensor="mq135_ppm" color="#0DD2EA" label="VOC / NH₃ (MQ-135)"         umbral={150}  />
+                    <SensorChart lecturas={lecturas} sensor="mq135_ppm" color="#0DD2EA" label="VOC / NH₃ (MQ-135)"         umbral={150} onClick={() => setSensorActivo({ key: 'mq135_ppm', color: '#0DD2EA', label: 'VOC / NH₃ (MQ-135)', umbral: 150 })} />
                   </div>
                 </div>
               </div>
+
+              {/* Modal de Detalle */}
+              {sensorActivo && (
+                <SensorModal 
+                  isOpen={!!sensorActivo} 
+                  onClose={() => setSensorActivo(null)} 
+                  lecturas={lecturas}
+                  sensorKey={sensorActivo.key}
+                  color={sensorActivo.color}
+                  label={sensorActivo.label}
+                  umbral={sensorActivo.umbral}
+                />
+              )}
 
               {/* ── Tabla historial ── */}
               <div className="bg-[#032221] border border-[#095544] rounded-2xl overflow-hidden mt-8">
