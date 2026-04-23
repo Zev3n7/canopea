@@ -75,7 +75,6 @@ export default function CreditsPage() {
                       <div className="w-24 h-24 rounded-full bg-[#032221] border-2 border-[#095544] flex items-center justify-center text-4xl font-bold text-[#00DF81]">
                         {autor.nombre.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                       </div>
-                      <span className="text-xs text-[#707D7D] font-mono">Foto no disponible</span>
                     </div>
                   )}
                   <div className="absolute bottom-3 left-3 right-3">

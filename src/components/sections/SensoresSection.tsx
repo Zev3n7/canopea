@@ -23,7 +23,7 @@ const sensores = [
     rango: '300 – 10,000 ppm',
     color: 'lime' as const,
     desc:  'Sensor de semiconductor de óxido metálico (MOS). Detecta gases inflamables y humo mediante la variación de resistencia eléctrica al contacto con el gas.',
-    umbral: 1000,
+    umbral: 500,
     tag: 'INFLAMABLE',
   },
   {
@@ -34,7 +34,7 @@ const sensores = [
     rango: '20 – 2,000 ppm',
     color: 'cyan' as const,
     desc:  'Especializado en la detección de CO, un gas tóxico producto de combustión incompleta. Indicador directo de tráfico vehicular e industria.',
-    umbral: 200,
+    umbral: 26,
     tag: 'TÓXICO-CO',
   },
   {
@@ -45,7 +45,7 @@ const sensores = [
     rango: '10 – 300 ppm (NH₃)',
     color: 'olive' as const,
     desc:  'Sensor de amplio espectro que detecta compuestos orgánicos volátiles y gases de contaminación urbana, agrícola e industrial.',
-    umbral: 150,
+    umbral: 80,
     tag: 'VOC/NOx',
   },
 ]

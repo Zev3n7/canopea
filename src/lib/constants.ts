@@ -1,7 +1,7 @@
 // src/lib/constants.ts
 import type { Baliza, ComponenteProyecto, Author, Umbrales } from '@/types'
 
-export const UMBRALES: Umbrales = { mq2: 1000, mq7: 200, mq135: 150 }
+export const UMBRALES: Umbrales = { mq2: 500, mq7: 26, mq135: 80 }
 
 export const AUTORES: Author[] = [
   {
@@ -21,7 +21,7 @@ export const AUTORES: Author[] = [
     nombre: 'Aldo Gustavo Aponte Peña',
     rol: 'Maestro | Encargado de la guía del proyecto y asesoramiento.',
     escuela: 'Preparatoria 2 de Octubre de 1968',
-    bio: 'Ingeniero Quimico en materiales muy pro.',
+    bio: 'Mtro. Aldo Gustavo Aponte Peña.Maestro de matemáticas y física de la preparatoria 2 de octubre de 1968.',
   },
 ]
 

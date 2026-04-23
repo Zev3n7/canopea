@@ -202,7 +202,7 @@ export const sections: Section[] = [
       },
       {
         q: 'Calibración Rs/R0 y cálculo de ppm',
-        a: 'La relación $R_s/R_0$ normaliza la respuesta. $R_0$ es la resistencia en aire limpio. Utilizando las curvas de sensibilidad de los datasheets, se aplica una regresión logarítmica para transformar la señal eléctrica en unidades de concentración (partes por millón) [1, 11].',
+        a: 'La relación $R_s/R_0$ normaliza la respuesta. $R_0$ es la resistencia en aire limpio (ej. dividida por el ratio del datasheet: 9.83 para MQ-2, 27.5 para MQ-7). Con las curvas de sensibilidad de Winsen, la concentración es $ppm = a \\cdot (R_s/R_0)^b$ usando constantes empíricas (ej. para CO: $a=99.042$, $b=-1.529$) [1, 11].',
       },
       {
         q: 'Cadena completa de conversión',
@@ -211,6 +211,34 @@ export const sections: Section[] = [
     ],
     formula: '$$ \\log(ppm) = m \\cdot \\log(R_s/R_0) + b $$',
     formulaNote: 'Transformación lineal para el cálculo de concentración',
+  },
+  {
+    id: 'resultados',
+    icon: '📊',
+    color: '#00DF81',
+    title: '7. Resultados Experimentales',
+    subtitle: 'Validación en la zona de Angelópolis',
+    badge: 'PRUEBAS',
+    topics: [
+      {
+        q: 'Rendimiento de Transmisión IoT',
+        a: 'En pruebas de 100 ciclos consecutivos, la arquitectura Firebase-ESP32 demostró una latencia promedio de 720 ms por ciclo completo (adquisición, procesamiento y escritura en la nube) con una tasa de éxito del 97.2%.',
+      },
+      {
+        q: 'Concentraciones Promedio Registradas',
+        a: 'Los valores promedio de fondo durante el monitoreo fueron: 22.4 ppm para CO (MQ-7), 41.1 ppm equiv. para VOC/NH₃ (MQ-135) y 300 ppm para LPG/Humo (MQ-2).',
+      },
+      {
+        q: 'Calidad del Aire (ICA)',
+        a: 'Con base en la regla del peor caso y la NOM-172-SEMARNAT-2019, la calidad del aire general en el entorno de pruebas fue clasificada predominantemente como "BUENA", manteniendo las lecturas de los sensores por debajo de sus umbrales normativos.',
+      },
+      {
+        q: 'Comportamiento Espectral del MQ-135',
+        a: 'Los espectros de absorción mostraron una respuesta diferenciada ante la presencia simultánea de VOC y NH₃, comportamiento consistente con entornos urbanos donde coexisten emisiones vehiculares y de origen agroindustrial.',
+      },
+    ],
+    formula: '$$ \\text{Tasa Éxito} = \\frac{\\text{Paquetes Recibidos}}{\\text{Paquetes Enviados}} \\times 100 \\% $$',
+    formulaNote: 'Métrica de confiabilidad de la red descentralizada Canopea',
   },
 ];
 
@@ -221,7 +249,7 @@ export const flujoSistema: FlujoStep[] = [
   { label: 'CAMBIO EN Rs (Ohm)', color: '#00DF81', icon: '', desc: 'Rs↓ → Vout↑ (divisor voltaje)' },
   { label: 'ADC ESP32 12 bits', color: '#00DF81', icon: '', desc: '0–3.3V → 0–4095' },
   { label: 'CÁLCULO ppm', color: '#00DF81', icon: '', desc: 'ppm = a·(Rs/R0)^b' },
-  { label: 'WiFi HTTP / MQTT', color: '#00DF81', icon: '', desc: 'ESP32 → Servidor (cada 10–30s)' },
+  { label: 'WiFi HTTP POST', color: '#00DF81', icon: '', desc: 'ESP32 → Firestore (cada 10s)' },
   { label: 'PÁGINA WEB (AQI)', color: '#00DF81', icon: '', desc: 'Dashboard · Gráficas · Alertas' },
 ]
 
@@ -271,8 +299,16 @@ export const fuentes: Fuente[] = [
     color: '#00DF81',
     titulo: 'Índice AIRE y SALUD (NOM-172) — SEDEMA CDMX',
     url: 'https://www.aire.cdmx.gob.mx/default.php?opc=%27ZaBhnmI=&dc=%27aQ',
-    aporte: 'Normativa mexicana oficial (NOM-172-SEMARNAT-2019) estandarizada. Utilizada por el algoritmo principal de Canopea para determinar matemáticamente el riesgo sanitario, los contornos de clasificación semántica (EJ. Buena, Aceptable, Mala) y las recomendaciones oficiales de salud pública emitidas al usuario.',
+    aporte: 'Normativa mexicana oficial (NOM-172-SEMARNAT-2023) estandarizada. Utilizada por el algoritmo principal de Canopea para determinar matemáticamente el riesgo sanitario, los contornos de clasificación semántica (EJ. Buena, Aceptable, Mala) y las recomendaciones oficiales de salud pública emitidas al usuario.',
     conceptos: ['Norma Oficial Mexicana', 'Estandarización AQI', 'Salud Pública', 'Alertas de Riesgo'],
+  },
+  {
+    icon: '',
+    color: '#00DF81',
+    titulo: 'NOM-021-SSA1-2021 (Monóxido de Carbono) — DOF',
+    url: 'https://www.dof.gob.mx/normasOficiales/8781/salud_3_C/salud_3_C.html',
+    aporte: 'Norma Oficial Mexicana que establece los valores límite permisibles de concentración de monóxido de carbono (CO) en el aire ambiente. Se actualizan los parámetros a 26.0 ppm (1 hora) y 9.0 ppm (8 horas).',
+    conceptos: ['Norma Oficial Mexicana', 'Monóxido de Carbono', 'Límites Permisibles', 'Salud Ambiental'],
   },
 ]
 

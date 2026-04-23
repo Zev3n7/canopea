@@ -26,7 +26,7 @@ function safe(v: unknown): number {
 }
 
 // ─── Umbrales corregidos ───────────────────────────────────────────────────────
-// MQ7  → NOM-021-SSA1-2021: 7 ppm (1h) / 5 ppm (8h). Usamos 7 ppm como umbral
+// MQ7  → NOM-021-SSA1-2021: 26.0 ppm (1h) / 9.0 ppm (8h). Usamos 26.0 ppm como umbral
 //         de referencia para el score relativo (100% = límite NOM 1h)
 // MQ2  → Exterior urbano: GLP/metano no tiene NOM de inmisión.
 //         Referencia NFPA: alerta en 500 ppm (10% LEL GLP). Umbral = 500 ppm
@@ -35,14 +35,14 @@ function safe(v: unknown): number {
 //         (valor que en condiciones normales no debe superarse en espacio abierto)
 export const UMBRALES = {
   mq2: 500,   // ppm — 10% LEL GLP, referencia NFPA 58
-  mq7: 7,     // ppm — NOM-021-SSA1-2021 límite 1 hora
-  mq135: 80,    // ppm — umbral práctico COVs exterior MQ135
+  mq7: 26,    // ppm — NOM-021-SSA1-2021 límite 1 hora
+  mq135: 80,  // ppm — umbral práctico COVs exterior MQ135
 } as const
 
 // ─── Escala ICA — NOM-172-SEMARNAT-2023 ───────────────────────────────────────
 // La escala original del código usaba percentiles del umbral propio de cada sensor.
-// Se mantiene esa lógica pero con umbrales corregidos.
-// Bandas: Buena 0-50%, Aceptable 51-100%, Mala 101-150%, Muy mala 151-200%, Peligrosa >200%
+// Se mantiene esa lógica pero con umbrales corregidos y bandas oficiales.
+// Bandas: Buena 0-50%, Aceptable 51-100%, Mala 101-150%, Muy mala 151-200%, Extremadamente Mala >200%
 const LEVELS: Array<{
   max: number
   level: string
@@ -54,60 +54,50 @@ const LEVELS: Array<{
       max: 50,
       level: 'BUENA',
       color: '#00DF81',
-      msg: 'La calidad del aire es satisfactoria. Contaminación representa poco o ningún riesgo.',
+      msg: 'Riesgo Bajo. Es un buen día para realizar actividades al aire libre.',
       tips: [
-        'Condiciones ideales para actividades al aire libre.',
-        'Mantén los espacios ventilados naturalmente.',
-        'Ideal para ejercicio físico en exteriores.',
+        'Población en general: Disfruta de actividades al aire libre.',
+        'Grupos sensibles: Sin restricciones para actividades.',
       ],
     },
     {
       max: 100,
       level: 'ACEPTABLE',
       color: '#F9CB42',
-      msg: 'Calidad aceptable. Riesgo moderado para grupos sensibles.',
+      msg: 'Riesgo Moderado. Condiciones aceptables para la población general.',
       tips: [
-        'Personas con enfermedades respiratorias deben limitar esfuerzo prolongado al aire libre.',
-        'Mantén buena ventilación en espacios cerrados.',
-        'Monitorea los niveles si realizas actividad física intensa.',
+        'Grupos sensibles: Considerar reducir actividades físicas vigorosas al aire libre.',
+        'Población en general: Es un buen día para realizar actividades al aire libre.',
       ],
     },
     {
       max: 150,
       level: 'MALA',
       color: '#FF8C00',
-      // CO > 7 ppm ya supera NOM-021 → mensaje específico
-      msg: 'Niveles superiores a la norma NOM-021. Grupos sensibles pueden experimentar efectos en salud.',
+      msg: 'Riesgo Alto. Posibles efectos en la salud para grupos sensibles.',
       tips: [
-        'Niños, adultos mayores y personas con enfermedades respiratorias: evitar actividad al aire libre.',
-        'Si el contaminante principal es CO, verifica fuentes de combustión cercanas.',
-        'Usa cubrebocas N95 si debes permanecer en el exterior.',
-        'Cierra ventanas si la fuente es exterior.',
+        'Grupos sensibles: Evitar actividades físicas (tanto moderadas como vigorosas) al aire libre.',
+        'Población en general: Reducir actividades físicas vigorosas al aire libre.',
       ],
     },
     {
       max: 200,
       level: 'MUY MALA',
       color: '#E63946',
-      msg: 'Concentraciones peligrosas. Toda la población puede verse afectada.',
+      msg: 'Riesgo Muy Alto. Mayor probabilidad de efectos adversos en la salud general.',
       tips: [
-        'Permanece en interiores con puertas y ventanas cerradas.',
-        'Evita cualquier actividad al aire libre.',
-        'Usa mascarilla N95 si debes salir obligatoriamente.',
-        'Busca atención médica ante dificultad para respirar o mareo.',
+        'Grupos sensibles: No realizar actividades al aire libre. Acudir al médico si se presentan síntomas.',
+        'Población en general: Evitar actividades físicas al aire libre.',
       ],
     },
     {
       max: Infinity,
       level: 'EXTREMADAMENTE MALA',
       color: '#8B008B',
-      msg: 'Emergencia sanitaria. Evacuación recomendada. Contacta a autoridades.',
+      msg: 'Riesgo Extremadamente Alto. Alerta sanitaria para toda la población.',
       tips: [
-        'Permanece en interiores con ventanas cerradas.',
-        'Si CO > 50 ppm: evacúa y llama a bomberos / servicios de emergencia.',
-        'Usa purificadores de aire si están disponibles.',
-        'Usa mascarilla N95 obligatoriamente si debes salir.',
-        'Acude al médico ante cualquier síntoma respiratorio.',
+        'Grupos sensibles: No realizar actividades al aire libre. Acudir al médico si se presentan síntomas.',
+        'Población en general: No realizar actividades al aire libre.',
       ],
     },
   ]

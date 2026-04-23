@@ -29,7 +29,7 @@ function getPollutantInfo(name: string) {
   if (name.includes('VOC') || name.includes('NH'))
     return 'Los Compuestos Orgánicos Volátiles y el Amoníaco son toxinas procedentes de fertilizantes, desechos de biomasa y productos químicos que afectan directamente la calidad ambiental.'
   if (name.includes('Monóxido') || name.includes('CO'))
-    return 'El Monóxido de Carbono (CO) es un gas tóxico altamente peligroso asociado a la combustión incompleta de vehículos e industria pesada. Límite NOM-021: 7 ppm / 1h.'
+    return 'El Monóxido de Carbono (CO) es un gas tóxico altamente peligroso asociado a la combustión incompleta de vehículos e industria pesada. Límite NOM-021: 26.0 ppm / 1h.'
   if (name.includes('GLP') || name.includes('Humo'))
     return 'Presencia de gases combustibles y humo. Su alza puede indicar fugas de gas licuado o actividad de fuego cercana. Alerta de seguridad: 500 ppm (10% LEL).'
   return ''
@@ -71,10 +71,10 @@ function Gauge({ pct, color, size = 80 }: { pct: number; color: string; size?: n
 // ─── Semáforo ICA ─────────────────────────────────────────────────────────────
 const ICA_STEPS = [
   { key: 'BUENA', color: '#00DF81', bg: 'rgba(0,223,129,0.12)', label: 'Buena', sub: 'Riesgo bajo' },
-  { key: 'ACEPTABLE', color: '#F9CB42', bg: 'rgba(249,203,66,0.12)', label: 'Aceptable', sub: 'Moderado' },
+  { key: 'ACEPTABLE', color: '#F9CB42', bg: 'rgba(249,203,66,0.12)', label: 'Aceptable', sub: 'Riesgo moderado' },
   { key: 'MALA', color: '#FF8C00', bg: 'rgba(255,140,0,0.12)', label: 'Mala', sub: 'Riesgo alto' },
-  { key: 'MUY MALA', color: '#E63946', bg: 'rgba(230,57,70,0.12)', label: 'Muy mala', sub: 'Muy alto' },
-  { key: 'EXTREMADAMENTE MALA', color: '#8B008B', bg: 'rgba(139,0,139,0.12)', label: 'Peligrosa', sub: 'Emergencia' },
+  { key: 'MUY MALA', color: '#E63946', bg: 'rgba(230,57,70,0.12)', label: 'Muy mala', sub: 'Riesgo muy alto' },
+  { key: 'EXTREMADAMENTE MALA', color: '#8B008B', bg: 'rgba(139,0,139,0.12)', label: 'Ext. mala', sub: 'R. ext. alto' },
 ]
 
 function Semaforo({ level }: { level: string }) {
@@ -189,7 +189,7 @@ function RiskBar({ label, pct, nom }: { label: string; pct: number; nom: string 
   const level = levelFromPct(pct)
   const col = LEVEL_COLOR[level]
   const lbl = level === 'BUENA' ? 'Buena' : level === 'ACEPTABLE' ? 'Aceptable' :
-    level === 'MALA' ? 'Mala' : level === 'MUY MALA' ? 'Muy mala' : 'Peligrosa'
+    level === 'MALA' ? 'Mala' : level === 'MUY MALA' ? 'Muy mala' : 'Ext. mala'
   return (
     <div className="bg-[#032221] border border-[#095544] rounded-xl p-3 flex flex-col gap-2">
       <div className="flex justify-between items-center">
@@ -218,39 +218,39 @@ function RiskBar({ label, pct, nom }: { label: string; pct: number; nom: string 
 // ─── Panel de cuidado ─────────────────────────────────────────────────────────
 const CARE_CARDS = [
   {
-    icon: '🟢', title: 'Calidad buena · Riesgo bajo',
+    icon: '🟢', title: 'Buena · Riesgo Bajo',
     items: [
-      { label: 'Actividades al aire libre', value: 'sin restricción' },
-      { label: 'Ejercicio exterior', value: 'permitido normalmente' },
-      { label: 'Ventanas abiertas', value: 'recomendadas' },
-      { label: 'Grupos vulnerables', value: 'sin precauciones especiales' },
+      { label: 'Grupos sensibles', value: 'Sin restricciones' },
+      { label: 'Población general', value: 'Disfrutar al aire libre' },
+      { label: 'Actividad física', value: 'Recomendada' },
+      { label: 'Ventilación', value: 'Recomendada' },
     ],
   },
   {
-    icon: '🟡', title: 'Calidad aceptable · Moderado',
+    icon: '🟡', title: 'Aceptable · Riesgo Moderado',
     items: [
-      { label: 'Ejercicio intenso', value: 'reducir duración' },
-      { label: 'Niños y adultos mayores', value: 'evitar exposición prolongada' },
-      { label: 'Asma / enf. respiratoria', value: 'llevar medicamento' },
-      { label: 'Ventanas', value: 'filtrar o cerrar al mediodía' },
+      { label: 'Grupos sensibles', value: 'Reducir ejercicio vigoroso' },
+      { label: 'Población general', value: 'Sin restricciones' },
+      { label: 'Actividad física', value: 'Moderada' },
+      { label: 'Ventilación', value: 'Adecuada' },
     ],
   },
   {
-    icon: '🟠', title: 'Calidad mala · Riesgo alto',
+    icon: '🟠', title: 'Mala · Riesgo Alto',
     items: [
-      { label: 'Ejercicio exterior', value: 'posponer o evitar' },
-      { label: 'Tiempo fuera de casa', value: 'limitar al mínimo' },
-      { label: 'Cubrebocas N95', value: 'si debes salir' },
-      { label: 'Grupos vulnerables', value: 'permanecer en interior' },
+      { label: 'Grupos sensibles', value: 'Evitar actividad al aire libre' },
+      { label: 'Población general', value: 'Reducir ejercicio vigoroso' },
+      { label: 'Exposición', value: 'Reducir tiempo en el exterior' },
+      { label: 'Precaución', value: 'Monitorear síntomas' },
     ],
   },
   {
-    icon: '🔴', title: 'Muy mala / Peligrosa · Emergencia',
+    icon: '🔴', title: 'Muy / Ext. Mala · Riesgo Muy / Ext. Alto',
     items: [
-      { label: 'Toda la población', value: 'permanecer en interior' },
-      { label: 'Puertas y ventanas', value: 'cerrar inmediatamente' },
-      { label: 'Actividades y clases', value: 'suspender' },
-      { label: 'CO alto', value: 'evacuar y llamar a emergencias' },
+      { label: 'Grupos sensibles', value: 'No salir al exterior' },
+      { label: 'Población general', value: 'No realizar actividades fuera' },
+      { label: 'Acción', value: 'Permanecer en interiores' },
+      { label: 'Médico', value: 'Acudir si presenta síntomas' },
     ],
   },
 ]
@@ -280,8 +280,8 @@ function CarePanel() {
 
 // ─── Tabla NOM ────────────────────────────────────────────────────────────────
 const NOM_ROWS = [
-  { gas: 'CO', sensor: 'MQ7', limite: '7 ppm', promedio: '1 hora', norma: 'NOM-021-SSA1-2021', aplica: 'Exterior' },
-  { gas: 'CO', sensor: 'MQ7', limite: '5 ppm', promedio: '8 horas', norma: 'NOM-021-SSA1-2021', aplica: 'Exterior' },
+  { gas: 'CO', sensor: 'MQ7', limite: '26.0 ppm', promedio: '1 hora', norma: 'NOM-021-SSA1-2021', aplica: 'Exterior' },
+  { gas: 'CO', sensor: 'MQ7', limite: '9.0 ppm', promedio: '8 horas', norma: 'NOM-021-SSA1-2021', aplica: 'Exterior' },
   { gas: 'COVs', sensor: 'MQ135', limite: '0.1 mg/m³', promedio: 'Anual', norma: 'OMS', aplica: 'Exterior' },
   { gas: 'GLP', sensor: 'MQ2', limite: '500 ppm', promedio: 'Instantáneo', norma: 'NFPA 58 (10% LEL)', aplica: 'Seguridad' },
   { gas: 'Metano', sensor: 'MQ2', limite: '1,000 ppm', promedio: 'Instantáneo', norma: '10% LEL CH4', aplica: 'Seguridad' },
@@ -356,7 +356,7 @@ export default function MonitoringPage() {
   // Color del banner según nivel
   const bannerColor = aqi ? LEVEL_COLOR[aqi.level] ?? '#00DF81' : '#00DF81'
   const bannerIcon = aqi
-    ? { BUENA: '🟢', ACEPTABLE: '🟡', MALA: '🟠', 'MUY MALA': '🔴', 'EXTREMADAMENTE MALA': '🔴' }[aqi.level] ?? '🟢'
+    ? { BUENA: '🟢', ACEPTABLE: '🟡', MALA: '🟠', 'MUY MALA': '🔴', 'EXTREMADAMENTE MALA': '🟣' }[aqi.level] ?? '🟢'
     : '🟢'
 
   return (
@@ -480,8 +480,8 @@ export default function MonitoringPage() {
                   pct={pctMQ7}
                   rows={[
                     { label: 'CO', value: `${Number(ultima.mq7_ppm).toFixed(2)} ppm`, highlight: pctMQ7 > 50 },
-                    { label: 'NOM 1h', value: '7 ppm' },
-                    { label: 'NOM 8h', value: '5 ppm' },
+                    { label: 'NOM 1h', value: '26.0 ppm' },
+                    { label: 'NOM 8h', value: '9.0 ppm' },
                   ]}
                   badge={levelFromPct(pctMQ7)}
                 />
@@ -508,7 +508,7 @@ export default function MonitoringPage() {
                 Nivel de riesgo por contaminante
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <RiskBar label="CO (salud)" pct={pctMQ7} nom="NOM-021: 5 ppm / 8h" />
+                <RiskBar label="CO (salud)" pct={pctMQ7} nom="NOM-021: 9.0 ppm / 8h" />
                 <RiskBar label="GLP (seguridad)" pct={pctMQ2} nom="Alerta: >500 ppm exterior" />
                 <RiskBar label="COVs (calidad)" pct={pctMQ135} nom="OMS: <0.1 mg/m³" />
               </div>
@@ -546,8 +546,8 @@ export default function MonitoringPage() {
                   {activeTab === 'co' && (
                     <SensorChart lecturas={lecturas} sensor="mq7_ppm"
                       color="#2CC295" label="Monóxido de Carbono — MQ-7 (ppm)"
-                      umbral={7}
-                      onClick={() => setSensorActivo({ key: 'mq7_ppm', color: '#2CC295', label: 'Monóxido de Carbono (MQ-7)', umbral: 7 })}
+                      umbral={26}
+                      onClick={() => setSensorActivo({ key: 'mq7_ppm', color: '#2CC295', label: 'Monóxido de Carbono (MQ-7)', umbral: 26 })}
                     />
                   )}
                   {activeTab === 'glp' && (
@@ -632,9 +632,9 @@ export default function MonitoringPage() {
                     {[
                       { color: '#00DF81', range: '0 – 50%', label: 'BUENA', sub: 'Riesgo Bajo' },
                       { color: '#F9CB42', range: '51 – 100%', label: 'ACEPTABLE', sub: 'Riesgo Moderado' },
-                      { color: '#FF8C00', range: '101 – 150%', label: 'MALA', sub: 'Supera NOM (CO > 7 ppm)' },
+                      { color: '#FF8C00', range: '101 – 150%', label: 'MALA', sub: 'Riesgo Alto' },
                       { color: '#E63946', range: '151 – 200%', label: 'MUY MALA', sub: 'Riesgo Muy Alto' },
-                      { color: '#8B008B', range: '> 200%', label: 'EXTREMADAMENTE MALA', sub: 'Emergencia' },
+                      { color: '#8B008B', range: '> 200%', label: 'EXTREMADAMENTE MALA', sub: 'Riesgo Extremadamente Alto' },
                     ].map(r => (
                       <div key={r.label} className="flex items-center gap-3 text-xs">
                         <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: r.color }} />
